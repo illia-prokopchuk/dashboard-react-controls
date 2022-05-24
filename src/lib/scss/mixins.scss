@@ -722,6 +722,11 @@
       }
     }
 
+    .disabled {
+      color: $doveGray;
+      cursor: not-allowed;
+    }
+
     .no-border {
       border-bottom: none;
 
