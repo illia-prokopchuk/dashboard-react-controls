@@ -1,6 +1,7 @@
 export { default as Button } from './Button/Button'
 export { default as ConfirmDialog } from './ConfirmDialog/ConfirmDialog'
 export { default as FormCheckBox } from './FormCheckBox/FormCheckBox'
+export { default as FormChipCell } from './FormChipCell/FormChipCell'
 export { default as FormInput } from './FormInput/FormInput'
 export { default as FormKeyValueTable } from './FormKeyValueTable/FormKeyValueTable'
 export { default as FormRadio } from './FormRadio/FormRadio'
