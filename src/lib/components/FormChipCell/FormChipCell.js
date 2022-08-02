@@ -5,7 +5,7 @@ import { isEqual } from 'lodash'
 import FormChipCellView from './FormChipCellView'
 
 import { isEveryObjectValueEmpty } from '../../utils/common.util'
-import { generateVisibleAndHiddenChipsList } from '../../utils/cutChips'
+import { generateChipsList } from '../../utils/generateChipsList.util'
 import { CHIP_OPTIONS } from '../../types'
 import { CLICK, TAB, TAB_SHIFT } from '../../constants'
 
@@ -47,7 +47,7 @@ const FormChipCell = ({
       ? {
           visibleChips: formState.values[name]
         }
-      : generateVisibleAndHiddenChipsList(
+      : generateChipsList(
           formState.values[name],
           visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount,
           delimiter
@@ -112,9 +112,9 @@ const FormChipCell = ({
   }, [showHiddenChips, handleShowElements])
 
   const checkChipsList = useCallback(
-    arr => {
-      if (isEqual(initialValues[name], arr)) {
-        formState.initialValues[name] = arr
+    currentChipsList => {
+      if (isEqual(initialValues[name], currentChipsList)) {
+        formState.initialValues[name] = currentChipsList
       }
 
       formState.form.mutators.setFieldState(name, { modified: true })
@@ -181,11 +181,11 @@ const FormChipCell = ({
         }
 
         setEditConfig(prevState => {
-          const isNextChipIndexExists = prevState.chipIndex + 1 > fields.value.length - 1
+          const lastChipSelected = prevState.chipIndex + 1 > fields.value.length - 1
 
           return {
-            chipIndex: isNextChipIndexExists ? null : prevState.chipIndex + 1,
-            isEdit: !isNextChipIndexExists,
+            chipIndex: lastChipSelected ? null : prevState.chipIndex + 1,
+            isEdit: !lastChipSelected,
             isKeyFocused: true,
             isValueFocused: false,
             isNewChip: false

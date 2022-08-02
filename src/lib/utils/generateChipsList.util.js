@@ -1,4 +1,4 @@
-export const generateVisibleAndHiddenChipsList = (chips, maxLength) => {
+export const generateChipsList = (chips, maxLength) => {
   if (chips.length > maxLength) {
     let hiddenChipsNumber = `+ ${chips.length - maxLength}`
     const hiddenChips = chips

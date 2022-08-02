@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import FormChip from '../../components/FormChipCell/FormChip/FormChip'
 import { Tooltip, TextTooltipTemplate } from 'igz-controls/components'
 
-import { getFirstScrollableParent } from '../../utils/getFirstScrollableParent'
+import { getFirstScrollableParentUtil } from '../../utils/getFirstScrollableParent.util'
 import { CHIP_OPTIONS } from '../../types'
 
 import './hiddenChipsBlock.scss'
@@ -71,7 +71,7 @@ const HiddenChipsBlock = React.forwardRef(
 
     useEffect(() => {
       if (hiddenRef?.current) {
-        const scrollableParent = getFirstScrollableParent(
+        const scrollableParent = getFirstScrollableParentUtil(
           hiddenRef.current.offsetParent
         )
         const { height, top } = hiddenRef.current.getBoundingClientRect()

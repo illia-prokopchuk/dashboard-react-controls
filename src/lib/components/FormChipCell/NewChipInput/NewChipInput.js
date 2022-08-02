@@ -7,12 +7,12 @@ const NewChipInput = React.forwardRef(({ name, onChange, onFocus, ...inputProps 
 
   const handleInputChange = (event) => {
     input.onChange(event)
-    onChange && onChange(event)
+    onChange(event)
   }
 
   const handleInputFocus = event => {
     input.onFocus(event)
-    onFocus && onFocus(event)
+    onFocus(event)
   }
 
   return (
@@ -35,8 +35,6 @@ const NewChipInput = React.forwardRef(({ name, onChange, onFocus, ...inputProps 
     </Field>
   )
 })
-
-NewChipInput.defaultProps = {}
 
 NewChipInput.propTypes = {
   name: PropTypes.string.isRequired,

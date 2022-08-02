@@ -4,8 +4,8 @@ import classnames from 'classnames'
 
 import NewChipInput from '../NewChipInput/NewChipInput'
 
-import { CHIP_OPTIONS } from '../../../../types'
-import { TAB, TAB_SHIFT } from '../../../../constants'
+import { CHIP_OPTIONS } from '../../../types'
+import {BACKSPACE, CLICK, DELETE, TAB, TAB_SHIFT} from '../../../constants'
 
 import './newChipForm.scss'
 
@@ -99,7 +99,7 @@ const NewChipForm = React.forwardRef(
         const elementPath = event.path ?? event.composedPath?.()
 
         if (!elementPath.includes(refInputContainer.current)) {
-          onChange(event, 'Click')
+          onChange(event, CLICK)
         }
       },
       [onChange, refInputContainer]
@@ -125,7 +125,7 @@ const NewChipForm = React.forwardRef(
           onChange(event, TAB_SHIFT)
         }
 
-        if (event.key === 'Backspace' || event.key === 'Delete') {
+        if (event.key === BACKSPACE || event.key === DELETE) {
           setChipData(prevState => ({
             keyFieldWidth: editConfig.isKeyFocused ? minWidthInput : prevState.keyFieldWidth,
             valueFieldWidth: editConfig.isValueFocused
@@ -228,7 +228,9 @@ const NewChipForm = React.forwardRef(
   }
 )
 
-NewChipForm.defaultProps = {}
+NewChipForm.defaultProps = {
+  className: ''
+}
 
 NewChipForm.propTypes = {
   chip: PropTypes.object.isRequired,

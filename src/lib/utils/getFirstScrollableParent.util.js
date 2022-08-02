@@ -10,9 +10,9 @@ const scroll = node =>
       style(node, 'overflow-x')
   )
 
-export const getFirstScrollableParent = node =>
+export const getFirstScrollableParentUtil = node =>
   !node || node === document.body
     ? document.body
     : scroll(node)
     ? node
-    : getFirstScrollableParent(node.parentNode)
+    : getFirstScrollableParentUtil(node.parentNode)
