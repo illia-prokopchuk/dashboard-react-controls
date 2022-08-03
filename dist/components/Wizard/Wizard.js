@@ -15,8 +15,6 @@ var _classnames = _interopRequireDefault(require("classnames"));
 
 var _Button = _interopRequireDefault(require("../Button/Button"));
 
-var _ConfirmDialog = _interopRequireDefault(require("../ConfirmDialog/ConfirmDialog"));
-
 var _Modal = _interopRequireDefault(require("../Modal/Modal"));
 
 var _WizardSteps = _interopRequireDefault(require("./WizardSteps/WizardSteps"));
@@ -24,8 +22,6 @@ var _WizardSteps = _interopRequireDefault(require("./WizardSteps/WizardSteps"));
 var _constants = require("../../constants");
 
 var _types = require("../../types");
-
-var _common = require("../../utils/common.util");
 
 require("./Wizard.scss");
 
@@ -108,26 +104,6 @@ var Wizard = function Wizard(_ref) {
     return setActiveStepNumber(idx);
   };
 
-  var handleOnClose = function handleOnClose() {
-    if (formState && formState.dirty) {
-      (0, _common.openPopUp)(_ConfirmDialog.default, {
-        cancelButton: {
-          label: 'Cancel',
-          variant: _constants.TERTIARY_BUTTON
-        },
-        confirmButton: {
-          handler: onWizardResolve,
-          label: 'OK',
-          variant: _constants.SECONDARY_BUTTON
-        },
-        header: 'Are you sure?',
-        message: 'All changes will be lost'
-      });
-    } else {
-      onWizardResolve();
-    }
-  };
-
   var handleSubmit = function handleSubmit() {
     formState.handleSubmit();
 
@@ -163,7 +139,7 @@ var Wizard = function Wizard(_ref) {
         formState: formState,
         goToNextStep: goToNextStep,
         goToPreviousStep: goToPreviousStep,
-        handleOnClose: handleOnClose,
+        onWizardResolve: onWizardResolve,
         handleSubmit: handleSubmit
       }).map(function (action) {
         return /*#__PURE__*/(0, _jsxRuntime.jsx)(_Button.default, _objectSpread({}, action));
@@ -176,7 +152,7 @@ var Wizard = function Wizard(_ref) {
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)(_Modal.default, {
     actions: renderModalActions(),
     className: wizardClasses,
-    onClose: handleOnClose,
+    onClose: onWizardResolve,
     location: location,
     show: isWizardOpen,
     size: size,

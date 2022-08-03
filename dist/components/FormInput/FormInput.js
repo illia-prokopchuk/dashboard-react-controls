@@ -231,7 +231,7 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
 
   var validateField = function validateField(value) {
     var valueToValidate = (0, _lodash.isNil)(value) ? '' : String(value);
-    if (!valueToValidate && !required) return;
+    if (!valueToValidate && !required || disabled) return;
     var validationError = null;
 
     if (!(0, _lodash.isEmpty)(validationRules)) {

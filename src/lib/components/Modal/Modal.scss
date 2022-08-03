@@ -98,13 +98,13 @@
     &-enter {
       opacity: 0;
       transform: translate(-50%, calc(100vh));
-      transition: all 0.3s ease-in-out;
     }
 
     &-enter-active,
     &-enter-done {
       opacity: 1;
       transform: translate(-50%, -50%);
+      transition: all 0.3s ease-in-out;
     }
 
     &-exit {

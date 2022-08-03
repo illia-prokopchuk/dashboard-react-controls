@@ -14,14 +14,14 @@ import { ReactComponent as CloseIcon } from '../../images/close.svg'
 import './Modal.scss'
 
 const Modal = ({ actions, children, className, location, onClose, size, show, title }) => {
-  const [currentLocation, setCurrentLocation] = useState(location)
+  const [currentLocation, setCurrentLocation] = useState(location.pathname)
   const modalClassNames = classNames('modal', className, size && `modal-${size}`)
 
   useEffect(() => {
-    setCurrentLocation(location)
+    setCurrentLocation(location.pathname)
 
     return () => {
-      if (location !== currentLocation) {
+      if (location.pathname !== currentLocation) {
         onClose()
       }
     }
@@ -73,7 +73,7 @@ Modal.propTypes = {
     PropTypes.node,
     PropTypes.string
   ]).isRequired,
-  location: PropTypes.string.isRequired,
+  location: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
   size: MODAL_SIZES,

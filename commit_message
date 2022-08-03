@@ -1,6 +1,8 @@
 
 
-Create a new dist version 0.0.14
+Create a new dist version 0.0.15
 
 Collecting:
-- fix mixin name in select (#42)
+- Fix [Input] do not validate if disabled (#44)
+- Fix [Wizard] Does not close on navigation (#45)
+- Fix [css] wizard, model and input (#46)

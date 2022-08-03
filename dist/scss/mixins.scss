@@ -1041,27 +1041,19 @@
     }
 
     &-dense {
-      .form-field__control > *:first-child {
-        height: $fieldDense;
-      }
+      height: $fieldDense;
     }
 
     &-normal {
-      .form-field__control > *:first-child {
-        height: $fieldNormal;
-      }
+      height: $fieldNormal;
     }
 
     &-medium {
-      .form-field__control > *:first-child {
-        height: $fieldMedium;
-      }
+      height: $fieldMedium;
     }
 
     &-chunky {
-      .form-field__control > *:first-child {
-        height: $fieldChunky;
-      }
+      height: $fieldChunky;
     }
   }
 
@@ -1131,8 +1123,16 @@
 
   &:focus:not(:disabled),
   &:active:not(:disabled) {
-    outline: 1px solid #b1bcf3;
-    outline-offset: 2px;
+    animation: pulse-animation 0.5s ease-out;
+  }
+
+  @keyframes pulse-animation {
+    20% {
+      box-shadow: 0 0 0 0 rgba($cornflowerBlue, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 6px rgba($cornflowerBlue, 0);
+    }
   }
 
   &:hover {

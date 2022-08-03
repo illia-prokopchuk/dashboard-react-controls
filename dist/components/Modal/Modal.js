@@ -57,16 +57,16 @@ var Modal = function Modal(_ref) {
       show = _ref.show,
       title = _ref.title;
 
-  var _useState = (0, _react.useState)(location),
+  var _useState = (0, _react.useState)(location.pathname),
       _useState2 = _slicedToArray(_useState, 2),
       currentLocation = _useState2[0],
       setCurrentLocation = _useState2[1];
 
   var modalClassNames = (0, _classnames.default)('modal', className, size && "modal-".concat(size));
   (0, _react.useEffect)(function () {
-    setCurrentLocation(location);
+    setCurrentLocation(location.pathname);
     return function () {
-      if (location !== currentLocation) {
+      if (location.pathname !== currentLocation) {
         onClose();
       }
     };
@@ -128,7 +128,7 @@ Modal.defaultProps = {
 Modal.propTypes = {
   actions: _propTypes.default.array,
   children: _propTypes.default.oneOfType([_propTypes.default.element, _propTypes.default.object, _propTypes.default.node, _propTypes.default.string]).isRequired,
-  location: _propTypes.default.string.isRequired,
+  location: _propTypes.default.object.isRequired,
   onClose: _propTypes.default.func.isRequired,
   show: _propTypes.default.bool.isRequired,
   size: _types.MODAL_SIZES,
