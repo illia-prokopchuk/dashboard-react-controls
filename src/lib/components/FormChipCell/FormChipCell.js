@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { isEqual } from 'lodash'
+import { get, isEqual } from 'lodash'
 
 import FormChipCellView from './FormChipCellView'
 
@@ -33,22 +33,25 @@ const FormChipCell = ({
   const [showChips, setShowChips] = useState(false)
   const [visibleChipsCount, setVisibleChipsCount] = useState(8)
 
+  const getFormStateValues = get(formState.values, name)
+  const getInitialValues = get(initialValues, name)
+
   const chipsCellRef = useRef()
   const chipsWrapperRef = useRef()
 
   const handleShowElements = useCallback(() => {
     if (!isEditMode || (isEditMode && visibleChipsMaxLength)) {
-      setShowHiddenChips(state => !state)
+      setShowHiddenChips((state) => !state)
     }
   }, [isEditMode, visibleChipsMaxLength])
 
   let chips = useMemo(() => {
     return isEditMode || visibleChipsMaxLength === 'all'
       ? {
-          visibleChips: formState.values[name]
+          visibleChips: getFormStateValues
         }
       : generateChipsList(
-          formState.values[name],
+          getFormStateValues,
           visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount,
           delimiter
         )
@@ -112,9 +115,9 @@ const FormChipCell = ({
   }, [showHiddenChips, handleShowElements])
 
   const checkChipsList = useCallback(
-    currentChipsList => {
-      if (isEqual(initialValues[name], currentChipsList)) {
-        formState.initialValues[name] = currentChipsList
+    (currentChipsList) => {
+      if (isEqual(getInitialValues, currentChipsList)) {
+        getInitialValues = currentChipsList
       }
 
       formState.form.mutators.setFieldState(name, { modified: true })
@@ -151,7 +154,7 @@ const FormChipCell = ({
 
   const handleRemoveChip = useCallback(
     (event, fields, chipIndex) => {
-      checkChipsList(formState.values[name].filter((_, index) => index !== chipIndex))
+      checkChipsList(getFormStateValues.filter((_, index) => index !== chipIndex))
       fields.remove(chipIndex)
       event && event.stopPropagation()
     },
@@ -160,7 +163,7 @@ const FormChipCell = ({
 
   const handleEditChip = useCallback(
     (event, fields, nameEvent) => {
-      const chip = formState.values[name][editConfig.chipIndex]
+      const chip = getFormStateValues[editConfig.chipIndex]
       const isChipNotEmpty = !!(chip.key && chip.value)
 
       if (nameEvent === CLICK) {
@@ -180,7 +183,7 @@ const FormChipCell = ({
           handleRemoveChip(event, fields, editConfig.chipIndex)
         }
 
-        setEditConfig(prevState => {
+        setEditConfig((prevState) => {
           const lastChipSelected = prevState.chipIndex + 1 > fields.value.length - 1
 
           return {
@@ -196,7 +199,7 @@ const FormChipCell = ({
           handleRemoveChip(event, fields, editConfig.chipIndex)
         }
 
-        setEditConfig(prevState => {
+        setEditConfig((prevState) => {
           const isPrevChipIndexExists = prevState.chipIndex - 1 < 0
 
           return {
@@ -210,7 +213,7 @@ const FormChipCell = ({
       }
 
       event && event.preventDefault()
-      checkChipsList(formState.values[name])
+      checkChipsList(getFormStateValues)
     },
     [editConfig.chipIndex, editConfig.isNewChip, handleRemoveChip, name, formState, checkChipsList]
   )
