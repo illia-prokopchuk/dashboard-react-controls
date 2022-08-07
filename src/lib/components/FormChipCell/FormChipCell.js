@@ -33,9 +33,6 @@ const FormChipCell = ({
   const [showChips, setShowChips] = useState(false)
   const [visibleChipsCount, setVisibleChipsCount] = useState(8)
 
-  const getFormStateValues = get(formState.values, name)
-  const getInitialValues = get(initialValues, name)
-
   const chipsCellRef = useRef()
   const chipsWrapperRef = useRef()
 
@@ -45,13 +42,20 @@ const FormChipCell = ({
     }
   }, [isEditMode, visibleChipsMaxLength])
 
+  // const getPathValues = (object) => {
+  //   const splitPath = name.split('.')
+  //   if (splitPath.length <= 1) return object[name]
+
+  //   return splitPath.reduce((obj, curr) => obj[curr], object)
+  // }
+
   let chips = useMemo(() => {
     return isEditMode || visibleChipsMaxLength === 'all'
       ? {
-          visibleChips: getFormStateValues
+          visibleChips: get(formState.values, name)
         }
       : generateChipsList(
-          getFormStateValues,
+          get(formState.values, name),
           visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount,
           delimiter
         )
@@ -116,8 +120,8 @@ const FormChipCell = ({
 
   const checkChipsList = useCallback(
     (currentChipsList) => {
-      if (isEqual(getInitialValues, currentChipsList)) {
-        getInitialValues = currentChipsList
+      if (isEqual(get(initialValues, name), currentChipsList)) {
+        formState.form.mutators.push(name, currentChipsList)
       }
 
       formState.form.mutators.setFieldState(name, { modified: true })
@@ -154,7 +158,7 @@ const FormChipCell = ({
 
   const handleRemoveChip = useCallback(
     (event, fields, chipIndex) => {
-      checkChipsList(getFormStateValues.filter((_, index) => index !== chipIndex))
+      checkChipsList(get(formState.values, name).filter((_, index) => index !== chipIndex))
       fields.remove(chipIndex)
       event && event.stopPropagation()
     },
@@ -163,7 +167,7 @@ const FormChipCell = ({
 
   const handleEditChip = useCallback(
     (event, fields, nameEvent) => {
-      const chip = getFormStateValues[editConfig.chipIndex]
+      const chip = get(formState.values, name)[editConfig.chipIndex]
       const isChipNotEmpty = !!(chip.key && chip.value)
 
       if (nameEvent === CLICK) {
@@ -213,7 +217,7 @@ const FormChipCell = ({
       }
 
       event && event.preventDefault()
-      checkChipsList(getFormStateValues)
+      checkChipsList(get(formState.values, name))
     },
     [editConfig.chipIndex, editConfig.isNewChip, handleRemoveChip, name, formState, checkChipsList]
   )
