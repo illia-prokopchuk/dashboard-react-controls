@@ -3,9 +3,11 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { Field, useField } from 'react-final-form'
 
-import { Tip, Tooltip, TextTooltipTemplate } from 'igz-controls/components'
+import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
+import Tip from '../Tip/Tip'
+import Tooltip from '../Tooltip/Tooltip'
 
-import { ReactComponent as InvalidIcon } from 'igz-controls/images/invalid.svg'
+import { ReactComponent as InvalidIcon } from '../../images/invalid.svg'
 
 import './formTextarea.scss'
 

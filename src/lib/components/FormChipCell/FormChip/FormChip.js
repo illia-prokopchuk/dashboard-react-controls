@@ -17,7 +17,6 @@ const FormChip = React.forwardRef(
       chipClassNames,
       chipIndex,
       chipOptions,
-      className,
       editConfig,
       handleEditChip,
       handleIsEdit,
@@ -25,7 +24,7 @@ const FormChip = React.forwardRef(
       isDeleteMode,
       isEditMode,
       keyName,
-      onClick,
+      name,
       setChipsSizes,
       setEditConfig,
       textOverflowEllipsis,
@@ -45,9 +44,14 @@ const FormChip = React.forwardRef(
       chipOptions.boldValue && 'chip-value_bold'
     )
 
+    const chipsClassNames = classnames(
+      chipClassNames,
+      editConfig.error?.indices.includes(chipIndex) && 'chip_duplicated'
+    )
+
     useEffect(() => {
       if (chipRef.current && setChipsSizes) {
-        setChipsSizes(state => ({
+        setChipsSizes((state) => ({
           ...state,
           [chipIndex]: chipRef.current.getBoundingClientRect().width
         }))
@@ -61,6 +65,7 @@ const FormChip = React.forwardRef(
         className="input-label-key"
         editConfig={editConfig}
         keyName={keyName}
+        name={name}
         onChange={handleEditChip}
         ref={ref}
         setEditConfig={setEditConfig}
@@ -68,8 +73,8 @@ const FormChip = React.forwardRef(
       />
     ) : (
       <div
-        className={chipClassNames}
-        onClick={event => handleIsEdit(event, chipIndex)}
+        className={chipsClassNames}
+        onClick={(event) => handleIsEdit(event, chipIndex)}
         ref={chipRef}
       >
         {chip.key && <div className={chipLabelClassNames}>{chip.key}</div>}
@@ -80,7 +85,10 @@ const FormChip = React.forwardRef(
           </>
         )}
         {(isEditMode || isDeleteMode) && (
-          <button className="item-icon-close" onClick={event => handleRemoveChip(event, chipIndex)}>
+          <button
+            className="item-icon-close"
+            onClick={(event) => handleRemoveChip(event, chipIndex)}
+          >
             <Close />
           </button>
         )}
@@ -101,7 +109,6 @@ FormChip.defaultProps = {
   isDeleteMode: false,
   isEditMode: false,
   keyName: '',
-  onClick: () => {},
   textOverflowEllipsis: false,
   valueName: ''
 }
@@ -111,7 +118,6 @@ FormChip.propTypes = {
   chipClassNames: PropTypes.string.isRequired,
   chipIndex: PropTypes.number.isRequired,
   chipOptions: CHIP_OPTIONS,
-  className: PropTypes.string,
   editConfig: PropTypes.object.isRequired,
   handleEditChip: PropTypes.func.isRequired,
   handleIsEdit: PropTypes.func.isRequired,
@@ -119,7 +125,6 @@ FormChip.propTypes = {
   isDeleteMode: PropTypes.bool,
   isEditMode: PropTypes.bool,
   keyName: PropTypes.string,
-  onClick: PropTypes.func,
   setChipsSizes: PropTypes.func.isRequired,
   setEditConfig: PropTypes.func.isRequired,
   textOverflowEllipsis: PropTypes.bool,

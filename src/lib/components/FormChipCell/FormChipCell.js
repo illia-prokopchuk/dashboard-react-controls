@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { get, isEqual } from 'lodash'
+import { get } from 'lodash'
 
 import FormChipCellView from './FormChipCellView'
 
@@ -8,6 +8,8 @@ import { isEveryObjectValueEmpty } from '../../utils/common.util'
 import { generateChipsList } from '../../utils/generateChipsList.util'
 import { CHIP_OPTIONS } from '../../types'
 import { CLICK, TAB, TAB_SHIFT } from '../../constants'
+
+import './formChipCell.scss'
 
 const FormChipCell = ({
   chipOptions,
@@ -17,6 +19,7 @@ const FormChipCell = ({
   initialValues,
   isEditMode,
   name,
+  label,
   onClick,
   shortChips,
   visibleChipsMaxLength
@@ -28,8 +31,12 @@ const FormChipCell = ({
     isEdit: false,
     isKeyFocused: true,
     isValueFocused: false,
-    isNewChip: false
+    isNewChip: false,
+    error: null
   })
+
+  const getChipValues = get(formState.values, name)
+
   const [showChips, setShowChips] = useState(false)
   const [visibleChipsCount, setVisibleChipsCount] = useState(8)
 
@@ -42,20 +49,13 @@ const FormChipCell = ({
     }
   }, [isEditMode, visibleChipsMaxLength])
 
-  // const getPathValues = (object) => {
-  //   const splitPath = name.split('.')
-  //   if (splitPath.length <= 1) return object[name]
-
-  //   return splitPath.reduce((obj, curr) => obj[curr], object)
-  // }
-
   let chips = useMemo(() => {
     return isEditMode || visibleChipsMaxLength === 'all'
       ? {
-          visibleChips: get(formState.values, name)
+          visibleChips: getChipValues
         }
       : generateChipsList(
-          get(formState.values, name),
+          getChipValues,
           visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount,
           delimiter
         )
@@ -118,17 +118,36 @@ const FormChipCell = ({
     }
   }, [showHiddenChips, handleShowElements])
 
-  const checkChipsList = useCallback(
-    (currentChipsList) => {
-      if (isEqual(get(initialValues, name), currentChipsList)) {
-        formState.form.mutators.push(name, currentChipsList)
-      }
+  const checkChipsList = useCallback(() => {
+    let dupes = {}
 
-      formState.form.mutators.setFieldState(name, { modified: true })
-      formState.form.mutators.setFieldState(name, { touched: true })
-    },
-    [initialValues, name, formState]
-  )
+    getChipValues.forEach((chip, index) => {
+      dupes[chip.key] = dupes[chip.key] || []
+      dupes[chip.key].push(index)
+    })
+
+    let dupesArray = []
+    for (let dup in dupes) {
+      if (dupes[dup].length > 1) {
+        dupesArray.push(...dupes[dup])
+      }
+    }
+
+    setEditConfig((preState) => ({
+      ...preState,
+      error: {
+        ...preState.error,
+        indices: dupesArray
+      }
+    }))
+
+    formState.form.mutators.setFieldState(name, { modified: true })
+    formState.form.mutators.setFieldState(name, { touched: true })
+  }, [initialValues, name, formState])
+
+  useEffect(() => {
+    checkChipsList()
+  }, [getChipValues])
 
   const handleAddNewChip = useCallback(
     (event, fields) => {
@@ -145,43 +164,46 @@ const FormChipCell = ({
       }
 
       event && event.preventDefault()
-      setEditConfig({
+      setEditConfig((prevConfig) => ({
+        ...prevConfig,
         chipIndex: fields.value.length,
         isEdit: true,
         isKeyFocused: true,
         isValueFocused: false,
         isNewChip: true
-      })
+      }))
     },
     [editConfig.isEdit, editConfig.chipIndex, showHiddenChips, formState, name, delimiter]
   )
 
   const handleRemoveChip = useCallback(
     (event, fields, chipIndex) => {
-      checkChipsList(get(formState.values, name).filter((_, index) => index !== chipIndex))
+      // checkChipsList(get(formState.values, name).filter((_, index) => index !== chipIndex))
       fields.remove(chipIndex)
+
       event && event.stopPropagation()
     },
-    [checkChipsList, formState.values, name]
+    [formState.values, name]
   )
 
   const handleEditChip = useCallback(
     (event, fields, nameEvent) => {
-      const chip = get(formState.values, name)[editConfig.chipIndex]
-      const isChipNotEmpty = !!(chip.key && chip.value)
+      const { key, value } = fields.value[editConfig.chipIndex]
+      const isChipNotEmpty = !!(key && value)
 
       if (nameEvent === CLICK) {
         if (editConfig.isNewChip && !isChipNotEmpty) {
           handleRemoveChip(event, fields, editConfig.chipIndex)
         }
 
-        setEditConfig({
+        setEditConfig((preState) => ({
+          ...preState,
           chipIndex: null,
           isEdit: false,
           isKeyFocused: true,
           isValueFocused: false,
           isNewChip: false
-        })
+        }))
       } else if (nameEvent === TAB) {
         if (editConfig.isNewChip && !isChipNotEmpty) {
           handleRemoveChip(event, fields, editConfig.chipIndex)
@@ -191,6 +213,7 @@ const FormChipCell = ({
           const lastChipSelected = prevState.chipIndex + 1 > fields.value.length - 1
 
           return {
+            ...prevState,
             chipIndex: lastChipSelected ? null : prevState.chipIndex + 1,
             isEdit: !lastChipSelected,
             isKeyFocused: true,
@@ -207,6 +230,7 @@ const FormChipCell = ({
           const isPrevChipIndexExists = prevState.chipIndex - 1 < 0
 
           return {
+            ...prevState,
             chipIndex: isPrevChipIndexExists ? null : prevState.chipIndex - 1,
             isEdit: !isPrevChipIndexExists,
             isKeyFocused: isPrevChipIndexExists,
@@ -215,9 +239,8 @@ const FormChipCell = ({
           }
         })
       }
-
+      checkChipsList()
       event && event.preventDefault()
-      checkChipsList(get(formState.values, name))
     },
     [editConfig.chipIndex, editConfig.isNewChip, handleRemoveChip, name, formState, checkChipsList]
   )
@@ -227,12 +250,13 @@ const FormChipCell = ({
       if (isEditMode) {
         event.stopPropagation()
 
-        setEditConfig({
+        setEditConfig((preState) => ({
+          ...preState,
           chipIndex: index,
           isEdit: true,
           isKeyFocused: true,
           isValueFocused: false
-        })
+        }))
       }
 
       onClick && onClick()
@@ -241,25 +265,30 @@ const FormChipCell = ({
   )
 
   return (
-    <FormChipCellView
-      chipOptions={chipOptions}
-      chips={chips}
-      className={className}
-      editConfig={editConfig}
-      handleAddNewChip={handleAddNewChip}
-      handleEditChip={handleEditChip}
-      handleIsEdit={handleIsEdit}
-      handleRemoveChip={handleRemoveChip}
-      handleShowElements={handleShowElements}
-      isEditMode={isEditMode}
-      name={name}
-      ref={{ chipsCellRef, chipsWrapperRef }}
-      setChipsSizes={setChipsSizes}
-      setEditConfig={setEditConfig}
-      shortChips={shortChips}
-      showChips={showChips}
-      showHiddenChips={showHiddenChips}
-    />
+    <div className="chips">
+      {label && <div className="chips__label">{label}</div>}
+      <div className={label ? 'chips__wrapper' : ''}>
+        <FormChipCellView
+          chipOptions={chipOptions}
+          chips={chips}
+          className={className}
+          editConfig={editConfig}
+          handleAddNewChip={handleAddNewChip}
+          handleEditChip={handleEditChip}
+          handleIsEdit={handleIsEdit}
+          handleRemoveChip={handleRemoveChip}
+          handleShowElements={handleShowElements}
+          isEditMode={isEditMode}
+          name={name}
+          ref={{ chipsCellRef, chipsWrapperRef }}
+          setChipsSizes={setChipsSizes}
+          setEditConfig={setEditConfig}
+          shortChips={shortChips}
+          showChips={showChips}
+          showHiddenChips={showHiddenChips}
+        />
+      </div>
+    </div>
   )
 }
 
@@ -273,6 +302,7 @@ FormChipCell.defaultProps = {
     font: 'purple'
   },
   delimiter: null,
+  label: null,
   onClick: () => {},
   shortChips: false,
   isEditMode: false,
@@ -286,6 +316,7 @@ FormChipCell.propTypes = {
   onClick: PropTypes.func,
   shortChips: PropTypes.bool,
   name: PropTypes.string.isRequired,
+  label: PropTypes.string,
   formState: PropTypes.shape({}).isRequired,
   initialValues: PropTypes.object.isRequired,
   isEditMode: PropTypes.bool,

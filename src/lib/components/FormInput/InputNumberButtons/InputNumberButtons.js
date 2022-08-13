@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { isNil } from 'lodash'
 
-import { ReactComponent as Arrow } from 'igz-controls/images/range-arrow-small.svg'
+import { ReactComponent as Arrow } from '../../../images/range-arrow-small.svg'
 
 import './InputNumberButtons.scss'
 

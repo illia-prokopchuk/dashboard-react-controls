@@ -17,6 +17,7 @@
       font-size: 14px;
       background-color: transparent;
       border: none;
+      margin-right: 5px;
 
       &.item_edited {
         &::placeholder {
@@ -47,6 +48,12 @@
   }
 
   &-separator {
+    margin-right: 5px;
+  }
+
+  &__warning {
+    display: inline-flex;
+    align-items: center;
     margin-right: 5px;
   }
 

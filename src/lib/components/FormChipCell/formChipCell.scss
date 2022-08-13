@@ -3,8 +3,15 @@
 @import '../../scss/mixins';
 
 .chips {
+  @include inputSelectField;
+
+  &__wrapper {
+    padding: 12px 16px;
+  }
+
   &-wrapper {
     display: flex;
+    flex-flow: row wrap;
     align-items: center;
   }
 
@@ -22,6 +29,10 @@
       &-block {
         position: relative;
         max-width: 100%;
+      }
+
+      &_duplicated {
+        border: $errorBorder;
       }
     }
 

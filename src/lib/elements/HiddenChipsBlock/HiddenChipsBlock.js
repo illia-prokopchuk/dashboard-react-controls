@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 import FormChip from '../../components/FormChipCell/FormChip/FormChip'
-import { Tooltip, TextTooltipTemplate } from 'igz-controls/components'
+import TextTooltipTemplate from '../../components/TooltipTemplate/TextTooltipTemplate'
+import Tooltip from '../../components/Tooltip/Tooltip'
 
 import { getFirstScrollableParentUtil } from '../../utils/getFirstScrollableParent.util'
 import { CHIP_OPTIONS } from '../../types'
@@ -32,9 +33,7 @@ const HiddenChipsBlock = React.forwardRef(
     const [isTop, setIsTop] = useState(false)
     const [isRight, setIsRight] = useState(true)
     const [isVisible, setIsVisible] = useState(false)
-    const [windowHalfWidth, setWindowHalfWidth] = useState(
-      window.innerWidth / 2
-    )
+    const [windowHalfWidth, setWindowHalfWidth] = useState(window.innerWidth / 2)
 
     const hiddenRef = useRef()
 
@@ -42,7 +41,7 @@ const HiddenChipsBlock = React.forwardRef(
 
     const hiddenChipsBlockClassNames = classnames(
       'chip-block-hidden',
-        isTop ? 'chip-block-hidden_top' : 'chip-block-hidden_bottom',
+      isTop ? 'chip-block-hidden_top' : 'chip-block-hidden_bottom',
       isRight ? 'chip-block-hidden_right' : 'chip-block-hidden_left',
       isVisible && 'chip-block-hidden_visible'
     )
@@ -53,7 +52,7 @@ const HiddenChipsBlock = React.forwardRef(
       }
     }, [hiddenRef])
 
-    const generateChipData = chip => {
+    const generateChipData = (chip) => {
       return `${chip.key}${chip.delimiter ? chip.delimiter : ':'} ${chip.value}`
     }
 
@@ -71,18 +70,16 @@ const HiddenChipsBlock = React.forwardRef(
 
     useEffect(() => {
       if (hiddenRef?.current) {
-        const scrollableParent = getFirstScrollableParentUtil(
-          hiddenRef.current.offsetParent
-        )
+        const scrollableParent = getFirstScrollableParentUtil(hiddenRef.current.offsetParent)
         const { height, top } = hiddenRef.current.getBoundingClientRect()
         const { right } = ref.current.getBoundingClientRect()
 
         if (
           hiddenRef.current.offsetParent.getBoundingClientRect().top -
-          hiddenRef.current.offsetParent.clientHeight -
-          height -
-          offset <
-          0 ||
+            hiddenRef.current.offsetParent.clientHeight -
+            height -
+            offset <
+            0 ||
           scrollableParent.getBoundingClientRect().top > top
         ) {
           setIsTop(true)
@@ -111,9 +108,7 @@ const HiddenChipsBlock = React.forwardRef(
                     element.delimiter ? (
                       <span className="chip__content">
                         {element.key}
-                        <span className="chip__delimiter">
-                          {element.delimiter}
-                        </span>
+                        <span className="chip__delimiter">{element.delimiter}</span>
                         {element.value}
                       </span>
                     ) : (
@@ -153,7 +148,7 @@ HiddenChipsBlock.defaultProps = {
   chips: [],
   chipIndex: 0,
   editConfig: {},
-  isEditMode: false,
+  isEditMode: false
 }
 
 HiddenChipsBlock.propTypes = {
