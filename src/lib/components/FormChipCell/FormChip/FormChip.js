@@ -14,7 +14,7 @@ const FormChip = React.forwardRef(
   (
     {
       chip,
-      chipClassNames,
+      chipClassNames: className,
       chipIndex,
       chipOptions,
       editConfig,
@@ -24,11 +24,12 @@ const FormChip = React.forwardRef(
       isDeleteMode,
       isEditMode,
       keyName,
-      name,
+      meta,
       setChipsSizes,
       setEditConfig,
       textOverflowEllipsis,
-      valueName
+      valueName,
+      validationRules
     },
     ref
   ) => {
@@ -44,9 +45,9 @@ const FormChip = React.forwardRef(
       chipOptions.boldValue && 'chip-value_bold'
     )
 
-    const chipsClassNames = classnames(
-      chipClassNames,
-      editConfig.error?.indices.includes(chipIndex) && 'chip_duplicated'
+    const chipClassNames = classnames(
+      className,
+      meta.error && meta.error.indices?.includes(chipIndex) && 'chip_duplicated'
     )
 
     useEffect(() => {
@@ -65,15 +66,16 @@ const FormChip = React.forwardRef(
         className="input-label-key"
         editConfig={editConfig}
         keyName={keyName}
-        name={name}
+        meta={meta}
         onChange={handleEditChip}
         ref={ref}
         setEditConfig={setEditConfig}
         valueName={valueName}
+        validationRules={validationRules}
       />
     ) : (
       <div
-        className={chipsClassNames}
+        className={chipClassNames}
         onClick={(event) => handleIsEdit(event, chipIndex)}
         ref={chipRef}
       >

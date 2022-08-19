@@ -1,12 +1,14 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
+import { get, isEmpty, isEqual, set } from 'lodash'
 
 import FormChipCellView from './FormChipCellView'
 
 import { isEveryObjectValueEmpty } from '../../utils/common.util'
 import { generateChipsList } from '../../utils/generateChipsList.util'
-import { CHIP_OPTIONS } from '../../types'
+import { checkPatternsValidity } from '../../utils/validation.util'
+
+import { CHIP_OPTIONS, INPUT_VALIDATION_RULES } from '../../types'
 import { CLICK, TAB, TAB_SHIFT } from '../../constants'
 
 import './formChipCell.scss'
@@ -22,7 +24,9 @@ const FormChipCell = ({
   label,
   onClick,
   shortChips,
-  visibleChipsMaxLength
+  validator,
+  visibleChipsMaxLength,
+  validationRules
 }) => {
   const [chipsSizes, setChipsSizes] = useState({})
   const [showHiddenChips, setShowHiddenChips] = useState(false)
@@ -31,17 +35,17 @@ const FormChipCell = ({
     isEdit: false,
     isKeyFocused: true,
     isValueFocused: false,
-    isNewChip: false,
-    error: null
+    isNewChip: false
   })
-
-  const getChipValues = get(formState.values, name)
 
   const [showChips, setShowChips] = useState(false)
   const [visibleChipsCount, setVisibleChipsCount] = useState(8)
 
   const chipsCellRef = useRef()
   const chipsWrapperRef = useRef()
+
+  const getChipValues = get(formState.values, name)
+  // const { input, meta } = useField(name) // Todo. Ask Andrii/Illia if I should use input.value instead of get(formState.values, name)
 
   const handleShowElements = useCallback(() => {
     if (!isEditMode || (isEditMode && visibleChipsMaxLength)) {
@@ -119,27 +123,9 @@ const FormChipCell = ({
   }, [showHiddenChips, handleShowElements])
 
   const checkChipsList = useCallback(() => {
-    let dupes = {}
-
-    getChipValues.forEach((chip, index) => {
-      dupes[chip.key] = dupes[chip.key] || []
-      dupes[chip.key].push(index)
-    })
-
-    let dupesArray = []
-    for (let dup in dupes) {
-      if (dupes[dup].length > 1) {
-        dupesArray.push(...dupes[dup])
-      }
+    if (isEqual(get(initialValues, name), get(formState.values, name))) {
+      set(formState.initialValues, name, get(formState.values, name))
     }
-
-    setEditConfig((preState) => ({
-      ...preState,
-      error: {
-        ...preState.error,
-        indices: dupesArray
-      }
-    }))
 
     formState.form.mutators.setFieldState(name, { modified: true })
     formState.form.mutators.setFieldState(name, { touched: true })
@@ -163,7 +149,6 @@ const FormChipCell = ({
         setShowHiddenChips(false)
       }
 
-      event && event.preventDefault()
       setEditConfig((prevConfig) => ({
         ...prevConfig,
         chipIndex: fields.value.length,
@@ -172,13 +157,14 @@ const FormChipCell = ({
         isValueFocused: false,
         isNewChip: true
       }))
+
+      event && event.preventDefault()
     },
     [editConfig.isEdit, editConfig.chipIndex, showHiddenChips, formState, name, delimiter]
   )
 
   const handleRemoveChip = useCallback(
     (event, fields, chipIndex) => {
-      // checkChipsList(get(formState.values, name).filter((_, index) => index !== chipIndex))
       fields.remove(chipIndex)
 
       event && event.stopPropagation()
@@ -193,6 +179,7 @@ const FormChipCell = ({
 
       if (nameEvent === CLICK) {
         if (editConfig.isNewChip && !isChipNotEmpty) {
+          //TODO: check with illia if need isNewChip or change to !isEdit
           handleRemoveChip(event, fields, editConfig.chipIndex)
         }
 
@@ -239,6 +226,7 @@ const FormChipCell = ({
           }
         })
       }
+
       checkChipsList()
       event && event.preventDefault()
     },
@@ -264,6 +252,119 @@ const FormChipCell = ({
     [isEditMode, onClick]
   )
 
+  const validateFields = (fieldsArray) => {
+    let validationError = null
+    let dupes = {}
+
+    fieldsArray.forEach((chip, index) => {
+      if (!chip) return
+
+      // Check if key is not duplicated
+      dupes[chip.key] = dupes[chip.key] || []
+      dupes[chip.key].push(index)
+
+      let dupesArray = []
+      for (let dup in dupes) {
+        if (dupes[dup].length > 1) {
+          dupesArray.push(...dupes[dup])
+        }
+      }
+
+      if (dupesArray.length > 1) {
+        validationError = {
+          name: 'duplicated',
+          label: 'Keys are duplicated',
+          indices: dupesArray
+        }
+      }
+    })
+
+    // Check if key does not contain spaces
+    if (isEmpty(validationRules)) {
+      const getSpacedKeysIndices = fieldsArray.reduce((indices, chip, index) => {
+        if (!chip) return
+
+        if (chip.key.includes(' ')) {
+          indices.push(index)
+        }
+        return indices
+      }, [])
+
+      validationError = {
+        key: 'spacedKey',
+        label: 'Key name contains spaces',
+        indices: getSpacedKeysIndices
+      }
+    }
+
+    // if (!isEmpty(validationRules)) {
+    //   const invalidIndices = new Set()
+
+    //   fieldsArray.forEach((chip, index) => {
+    //     if (chip.key && chip.value) {
+    //       const [, isValidKey] = checkPatternsValidity(validationRules['key'], chip.key)
+    //       const [, isValidValue] = checkPatternsValidity(validationRules['value'], chip.value)
+
+    //       if (!isValidKey || !isValidValue) {
+    //         invalidIndices.add(index)
+    //       }
+    //     }
+    //   })
+
+    //   if (invalidIndices.size) {
+    //     validationError = {
+    //       name: 'invalidFields',
+    //       label: 'Invalid Field',
+    //       indices: [...invalidIndices]
+    //     }
+    //   }
+    // }
+
+    if (!validationError && validator) {
+      validationError = validator(fieldsArray)
+    }
+
+    // const hasSpaces = fieldsArray.some(({ key }) => key && key.includes(' '))
+
+    // fieldsArray.forEach((chip, index) => {
+    //   if (!chip) return
+
+    //   dupes[chip.key] = dupes[chip.key] || []
+    //   dupes[chip.key].push(index)
+
+    //   let dupesArray = []
+    //   for (let dup in dupes) {
+    //     if (dupes[dup].length > 1) {
+    //       dupesArray.push(...dupes[dup])
+    //     }
+    //   }
+
+    //   if (dupesArray.length > 1) {
+    //     validationError = {
+    //       name: 'duplicated',
+    //       label: 'Keys are duplicated',
+    //       indices: dupesArray
+    //     }
+    //   }
+
+    //   if (isEmpty(validationRules)) {
+    //     if (hasSpaces) {
+    //       validationError = { key: 'invalid', label: 'Invalid key name', indices: [] }
+
+    //       if (chip.key && chip.key.includes(' ')) {
+    //         validationError.indices.push(index)
+    //       }
+    //     }
+    //   }
+
+    //   if (!validationError && validator) {
+    //     validationError = validator(fieldsArray)
+    //   }
+    // })
+
+    return validationError
+  }
+
   return (
     <div className="chips">
       {label && <div className="chips__label">{label}</div>}
@@ -286,6 +387,8 @@ const FormChipCell = ({
           shortChips={shortChips}
           showChips={showChips}
           showHiddenChips={showHiddenChips}
+          validateFields={validateFields}
+          validationRules={validationRules}
         />
       </div>
     </div>
@@ -306,6 +409,8 @@ FormChipCell.defaultProps = {
   onClick: () => {},
   shortChips: false,
   isEditMode: false,
+  validationRules: {},
+  validator: () => {},
   visibleChipsMaxLength: 'all'
 }
 
@@ -320,6 +425,11 @@ FormChipCell.propTypes = {
   formState: PropTypes.shape({}).isRequired,
   initialValues: PropTypes.object.isRequired,
   isEditMode: PropTypes.bool,
+  validationRules: PropTypes.shape({
+    key: INPUT_VALIDATION_RULES,
+    value: INPUT_VALIDATION_RULES
+  }),
+  validator: PropTypes.func,
   visibleChipsMaxLength: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 

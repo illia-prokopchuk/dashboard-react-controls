@@ -32,7 +32,9 @@ const FormChipCellView = React.forwardRef(
       setEditConfig,
       shortChips,
       showChips,
-      showHiddenChips
+      showHiddenChips,
+      validateFields,
+      validationRules
     },
     { chipsCellRef, chipsWrapperRef }
   ) => {
@@ -62,14 +64,16 @@ const FormChipCellView = React.forwardRef(
     )
 
     return (
-      <FieldArray name={name}>
-        {({ fields }) => {
+      <FieldArray name={name} validate={validateFields}>
+        {({ fields, meta }) => {
           return (
             (isEditMode || !isEveryObjectValueEmpty(fields)) && (
               <div className="chips-cell" ref={chipsCellRef}>
                 <div className={wrapperClassNames} ref={chipsWrapperRef}>
                   {fields.map((contentItem, index) => {
                     const chipData = fields.value[index]
+
+                    console.log(meta)
                     return (
                       index < chips.visibleChips.length && (
                         <div className="chip-block" key={contentItem}>
@@ -106,12 +110,13 @@ const FormChipCellView = React.forwardRef(
                               }
                               isEditMode={isEditMode}
                               keyName={`${contentItem}.key`}
-                              name={name}
+                              meta={meta}
                               ref={chipsCellRef}
                               setChipsSizes={setChipsSizes}
                               setEditConfig={setEditConfig}
                               textOverflowEllipsis
                               valueName={`${contentItem}.value`}
+                              validationRules={validationRules}
                             />
                           </Tooltip>
                           {chips.visibleChips.length - 1 === index && showHiddenChips && (
@@ -131,20 +136,21 @@ const FormChipCellView = React.forwardRef(
                               }
                               handleShowElements={handleShowElements}
                               isEditMode={isEditMode}
+                              meta={meta}
                               ref={chipsCellRef}
                               setChipsSizes={setChipsSizes}
                               setEditConfig={setEditConfig}
+                              validationRules={validationRules}
                             />
                           )}
                         </div>
                       )
                     )
                   })}
-
-                  {editConfig.error?.indices.length > 1 && (
+                  {meta.error && !Array.isArray(meta.error) && (
                     <Tooltip
                       className="edit-chip__warning"
-                      template={<TextTooltipTemplate text={editConfig.error?.label} warning />}
+                      template={<TextTooltipTemplate text={meta.error.label} warning />}
                     >
                       <InvalidIcon />
                     </Tooltip>
@@ -206,7 +212,8 @@ FormChipCellView.propTypes = {
   setEditConfig: PropTypes.func.isRequired,
   shortChips: PropTypes.bool,
   showChips: PropTypes.bool.isRequired,
-  showHiddenChips: PropTypes.bool.isRequired
+  showHiddenChips: PropTypes.bool.isRequired,
+  validateFields: PropTypes.func.isRequired
 }
 
 export default FormChipCellView

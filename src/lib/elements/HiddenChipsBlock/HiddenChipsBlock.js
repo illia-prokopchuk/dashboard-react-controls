@@ -25,8 +25,10 @@ const HiddenChipsBlock = React.forwardRef(
       handleRemoveChip,
       handleShowElements,
       isEditMode,
+      meta,
       setChipsSizes,
-      setEditConfig
+      setEditConfig,
+      validationRules
     },
     ref
   ) => {
@@ -130,11 +132,13 @@ const HiddenChipsBlock = React.forwardRef(
                 handleRemoveChip={handleRemoveChip}
                 hiddenChips
                 isEditMode={isEditMode}
+                meta={meta}
                 ref={hiddenRef}
                 setChipsSizes={setChipsSizes}
                 setEditConfig={setEditConfig}
                 showChips={true}
                 textOverflowEllipsis
+                validationRules={validationRules}
               />
             </Tooltip>
           )

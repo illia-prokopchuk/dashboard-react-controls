@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Field, useField } from 'react-final-form'
 
 const NewChipInput = React.forwardRef(
-  ({ name, onChange, onFocus, validateField, ...inputProps }, ref) => {
+  ({ name, onChange, onFocus, validate, ...inputProps }, ref) => {
     const { input } = useField(name)
 
     const handleInputChange = (event) => {
@@ -17,7 +17,7 @@ const NewChipInput = React.forwardRef(
     }
 
     return (
-      <Field name={name} validate={validateField}>
+      <Field name={name} validate={validate}>
         {({ input }) => (
           <input
             autoComplete="off"
