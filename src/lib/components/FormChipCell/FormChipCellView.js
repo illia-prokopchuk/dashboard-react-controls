@@ -147,6 +147,7 @@ const FormChipCellView = React.forwardRef(
                       )
                     )
                   })}
+
                   {meta.error && !Array.isArray(meta.error) && (
                     <Tooltip
                       className="edit-chip__warning"
@@ -161,6 +162,7 @@ const FormChipCellView = React.forwardRef(
                       {chips.hiddenChipsNumber}
                     </span>
                   )}
+
                   {isEditMode && (
                     <button
                       className={buttonAddClassNames}

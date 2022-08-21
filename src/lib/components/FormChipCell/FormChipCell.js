@@ -257,7 +257,7 @@ const FormChipCell = ({
     let dupes = {}
 
     fieldsArray.forEach((chip, index) => {
-      if (!chip) return
+      if (!chip.key) return
 
       // Check if key is not duplicated
       dupes[chip.key] = dupes[chip.key] || []
@@ -282,18 +282,18 @@ const FormChipCell = ({
     // Check if key does not contain spaces
     if (isEmpty(validationRules)) {
       const getSpacedKeysIndices = fieldsArray.reduce((indices, chip, index) => {
-        if (!chip) return
-
-        if (chip.key.includes(' ')) {
+        if (chip.key && chip.key.includes(' ')) {
           indices.push(index)
         }
         return indices
       }, [])
 
-      validationError = {
-        key: 'spacedKey',
-        label: 'Key name contains spaces',
-        indices: getSpacedKeysIndices
+      if (getSpacedKeysIndices.length) {
+        validationError = {
+          key: 'spacedKey',
+          label: 'Key name contains spaces',
+          indices: getSpacedKeysIndices
+        }
       }
     }
 
