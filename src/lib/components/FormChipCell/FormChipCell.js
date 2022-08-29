@@ -6,7 +6,7 @@ import FormChipCellView from './FormChipCellView'
 
 import { isEveryObjectValueEmpty } from '../../utils/common.util'
 import { generateChipsList } from '../../utils/generateChipsList.util'
-import { checkPatternsValidity } from '../../utils/validation.util'
+// import { checkPatternsValidity } from '../../utils/validation.util'
 
 import { CHIP_OPTIONS, INPUT_VALIDATION_RULES } from '../../types'
 import { CLICK, TAB, TAB_SHIFT } from '../../constants'
@@ -254,30 +254,32 @@ const FormChipCell = ({
 
   const validateFields = (fieldsArray) => {
     let validationError = null
-    let dupes = {}
+    const dupes = {}
+    const dupesIndices = []
+    // const invalidIndices = []
 
+    if (!fieldsArray) return
+
+    // Check if key is not duplicated
     fieldsArray.forEach((chip, index) => {
       if (!chip.key) return
-
-      // Check if key is not duplicated
       dupes[chip.key] = dupes[chip.key] || []
       dupes[chip.key].push(index)
-
-      let dupesArray = []
-      for (let dup in dupes) {
-        if (dupes[dup].length > 1) {
-          dupesArray.push(...dupes[dup])
-        }
-      }
-
-      if (dupesArray.length > 1) {
-        validationError = {
-          name: 'duplicated',
-          label: 'Keys are duplicated',
-          indices: dupesArray
-        }
-      }
     })
+
+    for (let dup in dupes) {
+      if (dupes[dup].length > 1) {
+        dupesIndices.push(...dupes[dup])
+      }
+    }
+
+    if (dupesIndices.length > 1) {
+      validationError = {
+        name: 'duplicated',
+        label: 'Keys are duplicated',
+        indices: dupesIndices
+      }
+    }
 
     // Check if key does not contain spaces
     if (isEmpty(validationRules)) {
@@ -298,24 +300,22 @@ const FormChipCell = ({
     }
 
     // if (!isEmpty(validationRules)) {
-    //   const invalidIndices = new Set()
-
     //   fieldsArray.forEach((chip, index) => {
     //     if (chip.key && chip.value) {
     //       const [, isValidKey] = checkPatternsValidity(validationRules['key'], chip.key)
     //       const [, isValidValue] = checkPatternsValidity(validationRules['value'], chip.value)
 
     //       if (!isValidKey || !isValidValue) {
-    //         invalidIndices.add(index)
+    //         invalidIndices.push(index)
     //       }
     //     }
     //   })
 
-    //   if (invalidIndices.size) {
+    //   if (invalidIndices.length) {
     //     validationError = {
     //       name: 'invalidFields',
     //       label: 'Invalid Field',
-    //       indices: [...invalidIndices]
+    //       indices: invalidIndices
     //     }
     //   }
     // }

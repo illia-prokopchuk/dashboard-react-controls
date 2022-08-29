@@ -72,8 +72,6 @@ const FormChipCellView = React.forwardRef(
                 <div className={wrapperClassNames} ref={chipsWrapperRef}>
                   {fields.map((contentItem, index) => {
                     const chipData = fields.value[index]
-
-                    console.log(meta)
                     return (
                       index < chips.visibleChips.length && (
                         <div className="chip-block" key={contentItem}>

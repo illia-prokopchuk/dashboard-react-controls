@@ -47,9 +47,9 @@ const NewChipForm = React.forwardRef(
     const minWidthInput = 25
     const minWidthValueInput = 35
 
-    const refInputKey = React.createRef()
-    const refInputValue = React.createRef()
-    const refInputContainer = React.createRef()
+    const refInputKey = React.useRef()
+    const refInputValue = React.useRef()
+    const refInputContainer = React.useRef()
 
     const labelKeyClassName = classnames(
       className,
@@ -241,12 +241,6 @@ const NewChipForm = React.forwardRef(
       [maxWidthInput, refInputKey, refInputValue, keyName]
     )
 
-    const getValidationRules = useCallback(() => {
-      return validationRules[selectedType].map(({ isValid = false, label, name }) => {
-        return <ValidationTemplate valid={isValid} validationMessage={label} key={name} />
-      })
-    }, [meta.error, selectedType, validationRules])
-
     useEffect(() => {
       setSelectedType(editConfig.isKeyFocused ? 'key' : editConfig.isValueFocused ? 'value' : null)
     }, [editConfig.isKeyFocused, editConfig.isValueFocused])
@@ -278,6 +272,12 @@ const NewChipForm = React.forwardRef(
         !showValidationRules && setShowValidationRules(true)
       }
     }, [meta.error, selectedType])
+
+    const getValidationRules = useCallback(() => {
+      return validationRules[selectedType].map(({ isValid = false, label, name }) => {
+        return <ValidationTemplate valid={isValid} validationMessage={label} key={name} />
+      })
+    }, [meta.error, selectedType, validationRules])
 
     const validateFieldByRules = (value) => {
       if (!value) return
