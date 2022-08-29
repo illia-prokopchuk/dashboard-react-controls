@@ -3,6 +3,7 @@
     display: flex;
     flex-flow: row nowrap;
     overflow: hidden;
+    padding-top: 0;
     padding-right: 0;
   }
 
@@ -10,6 +11,7 @@
     overflow-y: auto;
     height: 100%;
     width: 100%;
+    padding-top: 1.5rem;
     padding-right: 2rem;
     padding-left: 1rem;
   }

@@ -2,12 +2,12 @@ import React from 'react'
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import SelectOption from './SelectOption'
 
-const renderComponent = props => render(<SelectOption {...props} />)
+const renderComponent = (props) => render(<SelectOption {...props} />)
 
-jest.mock('igz-controls/images/checkbox-unchecked.svg', () => ({
+jest.mock('../../images/checkbox-unchecked.svg', () => ({
   ReactComponent: 'unchecked-icon'
 }))
-jest.mock('igz-controls/images/checkbox-checked.svg', () => ({
+jest.mock('../../images/checkbox-checked.svg', () => ({
   ReactComponent: 'unchecked-icon'
 }))
 
@@ -72,11 +72,7 @@ describe('SelectOption component', () => {
 
   it('should add class "disabled" to SelectOption if props disabled set to "true"', () => {
     wrapper.rerender(
-      <SelectOption
-        item={{ label: 'Test1', id: 'test1' }}
-        selectType="test1"
-        disabled={true}
-      />
+      <SelectOption item={{ label: 'Test1', id: 'test1' }} selectType="test1" disabled={true} />
     )
 
     const selectOption = wrapper.getByTestId('select-option')
