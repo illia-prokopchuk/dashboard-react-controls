@@ -54,9 +54,14 @@ const FormSelect = ({
     disabled && 'form-field__label-disabled'
   )
 
+  const selectValueClassName = classNames(
+    'form-field__select-value',
+    !input.value && 'form-field__select-placeholder'
+  )
+
   const selectedOption = options.find((option) => option.id === input.value)
 
-  const getLabel = () => {
+  const getSelectValue = () => {
     if (!input.value || !input.value.length) {
       return `Select Option${multiple ? 's' : ''}`
     }
@@ -179,7 +184,7 @@ const FormSelect = ({
             <div className="form-field__control">
               {!hideSelectedOption && (
                 <div data-testid="selected-option" className="form-field__select">
-                  <span className="form-field__select-value">{getLabel()}</span>
+                  <span className={selectValueClassName}>{getSelectValue()}</span>
                 </div>
               )}
             </div>
