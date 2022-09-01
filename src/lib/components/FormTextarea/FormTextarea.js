@@ -139,9 +139,9 @@ const TextArea = React.forwardRef(
               </div>
             </div>
             {maxLength && (
-              <div className="form-field__counter">{`${
-                maxLength - textAreaCount
-              }/${maxLength}`}</div>
+              <div className="form-field__counter">{`${maxLength - textAreaCount} ${
+                maxLength - textAreaCount !== 1 ? 'characters' : 'character'
+              } left`}</div>
             )}
           </div>
         )}
