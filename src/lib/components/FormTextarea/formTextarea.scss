@@ -23,5 +23,10 @@
         }
       }
     }
+
+    &__counter {
+      color: $topaz;
+      text-align: right;
+    }
   }
 }

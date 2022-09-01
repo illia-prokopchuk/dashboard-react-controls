@@ -15,7 +15,9 @@ var _classnames = _interopRequireDefault(require("classnames"));
 
 var _FormChip = _interopRequireDefault(require("../../components/FormChipCell/FormChip/FormChip"));
 
-var _components = require("igz-controls/components");
+var _TextTooltipTemplate = _interopRequireDefault(require("../../components/TooltipTemplate/TextTooltipTemplate"));
+
+var _Tooltip = _interopRequireDefault(require("../../components/Tooltip/Tooltip"));
 
 var _getFirstScrollableParent = require("../../utils/getFirstScrollableParent.util");
 
@@ -130,8 +132,8 @@ var HiddenChipsBlock = /*#__PURE__*/_react.default.forwardRef(function (_ref, re
     ref: hiddenRef,
     className: hiddenChipsBlockClassNames,
     children: chips === null || chips === void 0 ? void 0 : chips.map(function (element, index) {
-      return /*#__PURE__*/(0, _jsxRuntime.jsx)(_components.Tooltip, {
-        template: /*#__PURE__*/(0, _jsxRuntime.jsx)(_components.TextTooltipTemplate, {
+      return /*#__PURE__*/(0, _jsxRuntime.jsx)(_Tooltip.default, {
+        template: /*#__PURE__*/(0, _jsxRuntime.jsx)(_TextTooltipTemplate.default, {
           text: element.delimiter ? /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
             className: "chip__content",
             children: [element.key, /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {

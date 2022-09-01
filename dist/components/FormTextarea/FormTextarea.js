@@ -15,15 +15,19 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _reactFinalForm = require("react-final-form");
 
-var _components = require("igz-controls/components");
+var _TextTooltipTemplate = _interopRequireDefault(require("../TooltipTemplate/TextTooltipTemplate"));
 
-var _invalid = require("igz-controls/images/invalid.svg");
+var _Tip = _interopRequireDefault(require("../Tip/Tip"));
+
+var _Tooltip = _interopRequireDefault(require("../Tooltip/Tooltip"));
+
+var _invalid = require("../../images/invalid.svg");
 
 require("./formTextarea.scss");
 
 var _jsxRuntime = require("react/jsx-runtime");
 
-var _excluded = ["className", "disabled", "focused", "iconClass", "invalidText", "label", "name", "onBlur", "onChange", "required", "textAreaIcon", "tip", "withoutBorder"];
+var _excluded = ["className", "disabled", "focused", "iconClass", "invalidText", "label", "maxLength", "name", "onBlur", "onChange", "required", "textAreaIcon", "tip", "withoutBorder"];
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -60,6 +64,7 @@ var TextArea = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
       iconClass = _ref.iconClass,
       invalidText = _ref.invalidText,
       label = _ref.label,
+      maxLength = _ref.maxLength,
       name = _ref.name,
       onBlur = _ref.onBlur,
       onChange = _ref.onChange,
@@ -77,6 +82,11 @@ var TextArea = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
       _useState2 = _slicedToArray(_useState, 2),
       isInvalid = _useState2[0],
       setIsInvalid = _useState2[1];
+
+  var _useState3 = (0, _react.useState)(input.value.length),
+      _useState4 = _slicedToArray(_useState3, 2),
+      textAreaCount = _useState4[0],
+      setTextAreaCount = _useState4[1];
 
   var textAreaRef = /*#__PURE__*/_react.default.createRef();
 
@@ -99,6 +109,7 @@ var TextArea = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
 
   var handleInputChange = function handleInputChange(event) {
     input.onChange(event);
+    setTextAreaCount(event.target.value.length);
     onChange && onChange(event.target.value);
   };
 
@@ -153,6 +164,7 @@ var TextArea = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
             children: /*#__PURE__*/(0, _jsxRuntime.jsx)("textarea", _objectSpread(_objectSpread({
               "data-testid": "textarea",
               id: input.name,
+              maxLength: maxLength,
               ref: textAreaRef,
               required: isInvalid || required
             }, _objectSpread(_objectSpread({
@@ -164,14 +176,14 @@ var TextArea = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
             }))
           }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
             className: "form-field__icons",
-            children: [isInvalid && /*#__PURE__*/(0, _jsxRuntime.jsx)(_components.Tooltip, {
+            children: [isInvalid && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Tooltip.default, {
               className: "form-field__warning",
-              template: /*#__PURE__*/(0, _jsxRuntime.jsx)(_components.TextTooltipTemplate, {
+              template: /*#__PURE__*/(0, _jsxRuntime.jsx)(_TextTooltipTemplate.default, {
                 text: (_meta$error$label = (_meta$error = meta.error) === null || _meta$error === void 0 ? void 0 : _meta$error.label) !== null && _meta$error$label !== void 0 ? _meta$error$label : invalidText,
                 warning: true
               }),
               children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_invalid.ReactComponent, {})
-            }), tip && !required && /*#__PURE__*/(0, _jsxRuntime.jsx)(_components.Tip, {
+            }), tip && !required && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Tip.default, {
               text: tip,
               className: "form-field__tip"
             }), textAreaIcon && /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
@@ -180,6 +192,9 @@ var TextArea = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
               children: textAreaIcon
             })]
           })]
+        }), maxLength && /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
+          className: "form-field__counter",
+          children: "".concat(maxLength - textAreaCount, "/").concat(maxLength)
         })]
       });
     }
@@ -194,6 +209,7 @@ TextArea.defaultProps = {
   textAreaIcon: null,
   invalidText: 'This field is invalid',
   label: '',
+  maxLength: null,
   onBlur: function onBlur() {},
   onChange: function onChange() {},
   placeholder: '',
@@ -209,6 +225,7 @@ TextArea.propTypes = {
   textAreaIcon: _propTypes.default.element,
   invalidText: _propTypes.default.string,
   label: _propTypes.default.string,
+  maxLength: _propTypes.default.number,
   name: _propTypes.default.string.isRequired,
   onBlur: _propTypes.default.func,
   onChange: _propTypes.default.func,

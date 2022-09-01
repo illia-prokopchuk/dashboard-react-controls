@@ -6,6 +6,10 @@
 .form-field-input {
   width: 100%;
 
+  input {
+    width: 100%;
+  }
+
   .form-field {
     @include inputSelectField;
 

@@ -20,12 +20,12 @@ var renderComponent = function renderComponent(props) {
   return (0, _react2.render)( /*#__PURE__*/(0, _jsxRuntime.jsx)(_SelectOption.default, _objectSpread({}, props)));
 };
 
-jest.mock('igz-controls/images/checkbox-unchecked.svg', function () {
+jest.mock('../../images/checkbox-unchecked.svg', function () {
   return {
     ReactComponent: 'unchecked-icon'
   };
 });
-jest.mock('igz-controls/images/checkbox-checked.svg', function () {
+jest.mock('../../images/checkbox-checked.svg', function () {
   return {
     ReactComponent: 'unchecked-icon'
   };

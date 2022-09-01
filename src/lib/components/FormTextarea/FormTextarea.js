@@ -20,6 +20,7 @@ const TextArea = React.forwardRef(
       iconClass,
       invalidText,
       label,
+      maxLength,
       name,
       onBlur,
       onChange,
@@ -33,6 +34,7 @@ const TextArea = React.forwardRef(
   ) => {
     const { input, meta } = useField(name)
     const [isInvalid, setIsInvalid] = useState(false)
+    const [textAreaCount, setTextAreaCount] = useState(input.value.length)
     const textAreaRef = React.createRef()
 
     const formFieldClassNames = classnames('form-field-textarea', className)
@@ -66,6 +68,7 @@ const TextArea = React.forwardRef(
 
     const handleInputChange = (event) => {
       input.onChange(event)
+      setTextAreaCount(event.target.value.length)
       onChange && onChange(event.target.value)
     }
 
@@ -103,6 +106,7 @@ const TextArea = React.forwardRef(
                 <textarea
                   data-testid="textarea"
                   id={input.name}
+                  maxLength={maxLength}
                   ref={textAreaRef}
                   required={isInvalid || required}
                   {...{
@@ -134,6 +138,11 @@ const TextArea = React.forwardRef(
                 )}
               </div>
             </div>
+            {maxLength && (
+              <div className="form-field__counter">{`${
+                maxLength - textAreaCount
+              }/${maxLength}`}</div>
+            )}
           </div>
         )}
       </Field>
@@ -149,6 +158,7 @@ TextArea.defaultProps = {
   textAreaIcon: null,
   invalidText: 'This field is invalid',
   label: '',
+  maxLength: null,
   onBlur: () => {},
   onChange: () => {},
   placeholder: '',
@@ -165,6 +175,7 @@ TextArea.propTypes = {
   textAreaIcon: PropTypes.element,
   invalidText: PropTypes.string,
   label: PropTypes.string,
+  maxLength: PropTypes.number,
   name: PropTypes.string.isRequired,
   onBlur: PropTypes.func,
   onChange: PropTypes.func,

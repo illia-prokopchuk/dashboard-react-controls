@@ -1,7 +1,9 @@
 
 
-Create a new dist version 0.0.16
+Create a new dist version 0.0.17
 
 Collecting:
-- Impl [Models] Revamp Register model wizard (#48)
-- Fix [wizard] css and action button (#49)
+- Fix [Input] width to flex (#51)
+- Fix [UI] wizard css and import path to local (#53)
+- Fix [Select] show disabled text when no value (#55)
+- Fix [UI][Feature Vector] Wrong presentation for description tooltips for long description text (#54)

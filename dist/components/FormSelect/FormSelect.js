@@ -108,11 +108,12 @@ var FormSelect = function FormSelect(_ref) {
 
   var selectWrapperClassNames = (0, _classnames.default)('form-field__wrapper', "form-field__wrapper-".concat(density), disabled && 'form-field__wrapper-disabled', isOpen && 'form-field__wrapper-active', isInvalid && 'form-field__wrapper-invalid', withoutBorder && 'without-border');
   var selectLabelClassName = (0, _classnames.default)('form-field__label', disabled && 'form-field__label-disabled');
+  var selectValueClassName = (0, _classnames.default)('form-field__select-value', !input.value && 'form-field__select-placeholder');
   var selectedOption = options.find(function (option) {
     return option.id === input.value;
   });
 
-  var getLabel = function getLabel() {
+  var getSelectValue = function getSelectValue() {
     if (!input.value || !input.value.length) {
       return "Select Option".concat(multiple ? 's' : '');
     }
@@ -222,8 +223,8 @@ var FormSelect = function FormSelect(_ref) {
               "data-testid": "selected-option",
               className: "form-field__select",
               children: /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-                className: "form-field__select-value",
-                children: getLabel()
+                className: selectValueClassName,
+                children: getSelectValue()
               })
             })
           }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {

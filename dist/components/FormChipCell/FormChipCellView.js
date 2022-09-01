@@ -17,7 +17,9 @@ var _classnames = _interopRequireDefault(require("classnames"));
 
 var _HiddenChipsBlock = _interopRequireDefault(require("../../elements/HiddenChipsBlock/HiddenChipsBlock"));
 
-var _components = require("igz-controls/components");
+var _TextTooltipTemplate = _interopRequireDefault(require("../TooltipTemplate/TextTooltipTemplate"));
+
+var _Tooltip = _interopRequireDefault(require("../Tooltip/Tooltip"));
 
 var _common = require("../../utils/common.util");
 
@@ -68,9 +70,9 @@ var FormChipCellView = /*#__PURE__*/_react.default.forwardRef(function (_ref, _r
               var chipData = fields.value[index];
               return index < chips.visibleChips.length && /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
                 className: "chip-block",
-                children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_components.Tooltip, {
+                children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_Tooltip.default, {
                   hidden: editConfig.isEdit,
-                  template: /*#__PURE__*/(0, _jsxRuntime.jsx)(_components.TextTooltipTemplate, {
+                  template: /*#__PURE__*/(0, _jsxRuntime.jsx)(_TextTooltipTemplate.default, {
                     text: /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
                       className: "chip__content",
                       children: [chipData.key, /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {

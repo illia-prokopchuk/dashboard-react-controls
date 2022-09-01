@@ -11,7 +11,7 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _lodash = require("lodash");
 
-var _rangeArrowSmall = require("igz-controls/images/range-arrow-small.svg");
+var _rangeArrowSmall = require("../../../images/range-arrow-small.svg");
 
 require("./InputNumberButtons.scss");
 
