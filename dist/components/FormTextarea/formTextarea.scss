@@ -8,6 +8,7 @@
 
   textarea {
     width: 100%;
+    white-space: normal;
   }
 
   .form-field {
@@ -26,6 +27,8 @@
 
     &__counter {
       color: $topaz;
+      font-size: 12px;
+      margin-top: 5px;
       text-align: right;
     }
   }
