@@ -16,13 +16,10 @@ such restriction.
 */
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 
 import NewChipForm from '../NewChipForm/NewChipForm'
 
 import { CHIP_OPTIONS } from '../../../types'
-
-import { ReactComponent as Close } from '../../../images/close.svg'
 
 import './formChip.scss'
 
@@ -30,41 +27,24 @@ const FormChip = React.forwardRef(
   (
     {
       chip,
-      chipClassNames: className,
       chipIndex,
       chipOptions,
       editConfig,
       handleEditChip,
-      handleIsEdit,
       handleRemoveChip,
+      handleToEditMode,
       isDeleteMode,
       isEditMode,
       keyName,
       meta,
       setChipsSizes,
       setEditConfig,
-      textOverflowEllipsis,
-      valueName,
-      validationRules
+      validationRules,
+      valueName
     },
     ref
   ) => {
     const chipRef = React.useRef()
-
-    const chipLabelClassNames = classnames(
-      'chip__label',
-      (textOverflowEllipsis || isEditMode) && 'data-ellipsis'
-    )
-    const chipValueClassNames = classnames(
-      'chip__value',
-      (textOverflowEllipsis || isEditMode) && 'data-ellipsis',
-      chipOptions.boldValue && 'chip-value_bold'
-    )
-
-    const chipClassNames = classnames(
-      className,
-      meta.error && meta.error.indices?.includes(chipIndex) && 'chip_duplicated'
-    )
 
     useEffect(() => {
       if (chipRef.current && setChipsSizes) {
@@ -75,41 +55,24 @@ const FormChip = React.forwardRef(
       }
     }, [chipIndex, setChipsSizes])
 
-    return isEditMode && chipIndex === editConfig.chipIndex ? (
-      <NewChipForm
-        chip={chip}
-        chipOptions={chipOptions}
-        className="input-label-key"
-        editConfig={editConfig}
-        keyName={keyName}
-        meta={meta}
-        onChange={handleEditChip}
-        ref={ref}
-        setEditConfig={setEditConfig}
-        valueName={valueName}
-        validationRules={validationRules}
-      />
-    ) : (
-      <div
-        className={chipClassNames}
-        onClick={(event) => handleIsEdit(event, chipIndex)}
-        ref={chipRef}
-      >
-        {chip.key && <div className={chipLabelClassNames}>{chip.key}</div>}
-        {chip.value && (
-          <>
-            <div className="chip__delimiter">{chip.delimiter ?? ':'}</div>
-            <div className={chipValueClassNames}>{chip.value}</div>
-          </>
-        )}
-        {(isEditMode || isDeleteMode) && (
-          <button
-            className="item-icon-close"
-            onClick={(event) => handleRemoveChip(event, chipIndex)}
-          >
-            <Close />
-          </button>
-        )}
+    return (
+      <div onClick={(event) => handleToEditMode(event, chipIndex)} ref={chipRef}>
+        <NewChipForm
+          chip={chip}
+          chipIndex={chipIndex}
+          chipOptions={chipOptions}
+          className="input-label-key"
+          editConfig={editConfig}
+          handleRemoveChip={handleRemoveChip}
+          isEditMode={isEditMode}
+          keyName={keyName}
+          meta={meta}
+          onChange={handleEditChip}
+          ref={ref}
+          setEditConfig={setEditConfig}
+          validationRules={validationRules}
+          valueName={valueName}
+        />
       </div>
     )
   }
@@ -127,25 +90,25 @@ FormChip.defaultProps = {
   isDeleteMode: false,
   isEditMode: false,
   keyName: '',
-  textOverflowEllipsis: false,
+  validationRules: {},
   valueName: ''
 }
 
 FormChip.propTypes = {
   chip: PropTypes.object.isRequired,
-  chipClassNames: PropTypes.string.isRequired,
   chipIndex: PropTypes.number.isRequired,
   chipOptions: CHIP_OPTIONS,
   editConfig: PropTypes.object.isRequired,
   handleEditChip: PropTypes.func.isRequired,
-  handleIsEdit: PropTypes.func.isRequired,
   handleRemoveChip: PropTypes.func.isRequired,
+  handleToEditMode: PropTypes.func.isRequired,
   isDeleteMode: PropTypes.bool,
   isEditMode: PropTypes.bool,
   keyName: PropTypes.string,
+  meta: PropTypes.object.isRequired,
   setChipsSizes: PropTypes.func.isRequired,
   setEditConfig: PropTypes.func.isRequired,
-  textOverflowEllipsis: PropTypes.bool,
+  validationRules: PropTypes.object,
   valueName: PropTypes.string
 }
 

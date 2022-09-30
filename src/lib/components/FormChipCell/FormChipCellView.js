@@ -16,32 +16,31 @@ such restriction.
 */
 import React from 'react'
 import PropTypes from 'prop-types'
-import FormChip from './FormChip/FormChip'
-import { FieldArray } from 'react-final-form-arrays'
 import classnames from 'classnames'
+import { FieldArray } from 'react-final-form-arrays'
 
-import HiddenChipsBlock from '../../elements/HiddenChipsBlock/HiddenChipsBlock'
-import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
 import Tooltip from '../Tooltip/Tooltip'
+import FormChip from './FormChip/FormChip'
+import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
+import HiddenChipsBlock from '../../elements/HiddenChipsBlock/HiddenChipsBlock'
 
-import { isEveryObjectValueEmpty } from '../../utils/common.util'
 import { CHIP_OPTIONS } from '../../types'
+import { uniquenessError } from './formChipCell.util'
+import { isEveryObjectValueEmpty } from '../../utils/common.util'
 
 import { ReactComponent as Add } from '../../images/add.svg'
-import { ReactComponent as InvalidIcon } from '../../images/invalid.svg'
 
 const FormChipCellView = React.forwardRef(
   (
     {
       chipOptions,
       chips,
-      className,
       editConfig,
       handleAddNewChip,
       handleEditChip,
-      handleIsEdit,
       handleRemoveChip,
       handleShowElements,
+      handleToEditMode,
       isEditMode,
       name,
       setChipsSizes,
@@ -56,7 +55,6 @@ const FormChipCellView = React.forwardRef(
   ) => {
     const buttonAddClassNames = classnames(
       'button-add',
-      className,
       chipOptions.background && `button-add-background_${chipOptions.background}`,
       chipOptions.borderColor && `button-add-border_${chipOptions.borderColor}`,
       chipOptions.font && `button-add-font_${chipOptions.font}`,
@@ -75,13 +73,16 @@ const FormChipCellView = React.forwardRef(
       chipOptions.borderColor && `chip-border_${chipOptions.borderColor}`,
       chipOptions.font && `chip-font_${chipOptions.font}`,
       isEditMode && 'editable',
-      (showChips || isEditMode) && 'chip_visible',
-      className
+      (showChips || isEditMode) && 'chip_visible'
     )
 
     return (
       <FieldArray name={name} validate={validateFields}>
         {({ fields, meta }) => {
+          if (validationRules.key.every((rule) => rule.name !== uniquenessError.name)) {
+            validationRules.key.push(uniquenessError)
+          }
+
           return (
             (isEditMode || !isEveryObjectValueEmpty(fields)) && (
               <div className="chips-cell" ref={chipsCellRef}>
@@ -90,10 +91,10 @@ const FormChipCellView = React.forwardRef(
                     const chipData = fields.value[index]
                     return (
                       index < chips.visibleChips.length && (
-                        <div className="chip-block" key={contentItem}>
+                        <div className="chip-block" key={chipData.id}>
                           <Tooltip
                             hidden={editConfig.isEdit}
-                            key={contentItem}
+                            key={chipData.id}
                             template={
                               <TextTooltipTemplate
                                 text={
@@ -110,72 +111,51 @@ const FormChipCellView = React.forwardRef(
                           >
                             <FormChip
                               chip={chipData}
-                              chipClassNames={chipClassNames}
                               chipIndex={index}
                               chipOptions={chipOptions}
-                              className={className}
                               editConfig={editConfig}
                               handleEditChip={(event, nameEvent) =>
                                 handleEditChip(event, fields, nameEvent)
                               }
-                              handleIsEdit={handleIsEdit}
                               handleRemoveChip={(event, index) =>
                                 handleRemoveChip(event, fields, index)
                               }
+                              handleToEditMode={handleToEditMode}
                               isEditMode={isEditMode}
                               keyName={`${contentItem}.key`}
                               meta={meta}
                               ref={chipsCellRef}
                               setChipsSizes={setChipsSizes}
                               setEditConfig={setEditConfig}
-                              textOverflowEllipsis
-                              valueName={`${contentItem}.value`}
                               validationRules={validationRules}
+                              valueName={`${contentItem}.value`}
                             />
                           </Tooltip>
-                          {chips.visibleChips.length - 1 === index && showHiddenChips && (
-                            <HiddenChipsBlock
-                              chipClassNames={chipClassNames}
-                              chipIndex={index}
-                              chipOptions={chipOptions}
-                              chips={chips.hiddenChips}
-                              className={className}
-                              editConfig={editConfig}
-                              handleEditChip={(event, nameEvent) =>
-                                handleEditChip(event, fields, nameEvent)
-                              }
-                              handleIsEdit={handleIsEdit}
-                              handleRemoveChip={(event, index) =>
-                                handleRemoveChip(event, fields, index)
-                              }
-                              handleShowElements={handleShowElements}
-                              isEditMode={isEditMode}
-                              meta={meta}
-                              ref={chipsCellRef}
-                              setChipsSizes={setChipsSizes}
-                              setEditConfig={setEditConfig}
-                              validationRules={validationRules}
-                            />
-                          )}
                         </div>
                       )
                     )
                   })}
 
-                  {meta.error && !Array.isArray(meta.error) && (
-                    <Tooltip
-                      className="edit-chip__warning"
-                      template={<TextTooltipTemplate text={meta.error.label} warning />}
-                    >
-                      <InvalidIcon />
-                    </Tooltip>
-                  )}
-
-                  {chips.hiddenChipsNumber && (
-                    <span className={`${chipClassNames} chips_button`} onClick={handleShowElements}>
-                      {chips.hiddenChipsNumber}
-                    </span>
-                  )}
+                  <div className="chip-block">
+                    {chips.hiddenChips.length > 0 && showHiddenChips && (
+                      <HiddenChipsBlock
+                        chipClassNames={chipClassNames}
+                        chipOptions={chipOptions}
+                        chips={chips.hiddenChips}
+                        handleShowElements={handleShowElements}
+                        ref={chipsCellRef}
+                        textOverflowEllipsis
+                      />
+                    )}
+                    {chips.hiddenChipsNumber && (
+                      <span
+                        className={`${chipClassNames} chips_button`}
+                        onClick={handleShowElements}
+                      >
+                        {chips.hiddenChipsNumber}
+                      </span>
+                    )}
+                  </div>
 
                   {isEditMode && (
                     <button
@@ -205,31 +185,28 @@ FormChipCellView.defaultProps = {
     font: 'purple'
   },
   isEditMode: false,
-  delimiter: null,
-  onClick: () => {},
-  shortChips: false
+  shortChips: false,
+  validationRules: {}
 }
 
 FormChipCellView.propTypes = {
   chipOptions: CHIP_OPTIONS,
   chips: PropTypes.object.isRequired,
-  className: PropTypes.string,
   editConfig: PropTypes.object.isRequired,
   handleAddNewChip: PropTypes.func.isRequired,
   handleEditChip: PropTypes.func.isRequired,
-  handleIsEdit: PropTypes.func.isRequired,
   handleRemoveChip: PropTypes.func.isRequired,
   handleShowElements: PropTypes.func.isRequired,
+  handleToEditMode: PropTypes.func.isRequired,
   isEditMode: PropTypes.bool,
   name: PropTypes.string.isRequired,
-  delimiter: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-  onClick: PropTypes.func,
   setChipsSizes: PropTypes.func.isRequired,
   setEditConfig: PropTypes.func.isRequired,
   shortChips: PropTypes.bool,
   showChips: PropTypes.bool.isRequired,
   showHiddenChips: PropTypes.bool.isRequired,
-  validateFields: PropTypes.func.isRequired
+  validateFields: PropTypes.func.isRequired,
+  validationRules: PropTypes.object
 }
 
 export default FormChipCellView

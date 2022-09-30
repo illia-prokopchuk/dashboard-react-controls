@@ -30,14 +30,6 @@
         position: relative;
         max-width: 100%;
       }
-
-      &_duplicated {
-        border: $errorBorder;
-      }
-
-      &_invalid {
-        color: $amaranth;
-      }
     }
 
     .button-add {
@@ -63,5 +55,9 @@
         @include chipsFont(ButtonAddChip);
       }
     }
+  }
+
+  input:disabled {
+    cursor: default;
   }
 }

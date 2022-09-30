@@ -39,18 +39,6 @@
     padding: 8px 7px;
   }
 
-  .item-icon-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 5px;
-    padding: 0;
-
-    svg {
-      transform: scale(0.7);
-    }
-  }
-
   &-background {
     @include chipBackground(false);
   }

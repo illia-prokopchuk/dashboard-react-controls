@@ -29,6 +29,7 @@ export const generateChipsList = (chips, maxLength) => {
     }
   }
   return {
-    visibleChips: chips
+    visibleChips: chips,
+    hiddenChips: []
   }
 }

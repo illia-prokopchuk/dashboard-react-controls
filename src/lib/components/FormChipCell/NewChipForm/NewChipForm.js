@@ -17,16 +17,16 @@ such restriction.
 import React, { useState, useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { isEmpty } from 'lodash'
+import { isEmpty, get } from 'lodash'
 
 import NewChipInput from '../NewChipInput/NewChipInput'
 import OptionsMenu from '../../../elements/OptionsMenu/OptionsMenu'
 import ValidationTemplate from '../../../elements/ValidationTemplate/ValidationTemplate'
 
-import { checkPatternsValidity } from '../../../utils/validation.util'
-
 import { CHIP_OPTIONS } from '../../../types'
 import { BACKSPACE, CLICK, DELETE, TAB, TAB_SHIFT } from '../../../constants'
+
+import { ReactComponent as Close } from '../../../images/close.svg'
 
 import './newChipForm.scss'
 
@@ -34,15 +34,18 @@ const NewChipForm = React.forwardRef(
   (
     {
       chip,
+      chipIndex,
       chipOptions,
       className,
       editConfig,
+      handleRemoveChip,
+      isEditMode,
       keyName,
       meta,
       onChange,
       setEditConfig,
-      valueName,
-      validationRules: rules
+      validationRules: rules,
+      valueName
     },
     ref
   ) => {
@@ -52,7 +55,7 @@ const NewChipForm = React.forwardRef(
       keyFieldWidth: 0,
       valueFieldWidth: 0
     })
-    const [selectedType, setSelectedType] = useState('key')
+    const [selectedInput, setSelectedInput] = useState('key')
     const [validationRules, setValidationRules] = useState(rules)
     const [showValidationRules, setShowValidationRules] = useState(false)
 
@@ -70,12 +73,8 @@ const NewChipForm = React.forwardRef(
     const labelKeyClassName = classnames(
       className,
       !editConfig.isKeyFocused && 'item_edited',
-      meta.error &&
-        Array.isArray(meta.error) &&
-        meta.error[editConfig.chipIndex]['key'] &&
-        'edit-chip-container-font_invalid'
+      !isEmpty(get(meta, ['error', chipIndex, 'key'], [])) && !isEmpty(chipData.key) && 'item_edited_invalid'
     )
-
     const labelContainerClassName = classnames(
       'edit-chip-container',
       background && `edit-chip-container-background_${background}`,
@@ -83,21 +82,12 @@ const NewChipForm = React.forwardRef(
       font && `edit-chip-container-font_${font}`,
       density && `edit-chip-container-density_${density}`,
       borderRadius && `edit-chip-container-border_${borderRadius}`,
-      (editConfig.isEdit || editConfig.isNewChip) && 'edit-chip-container_edited',
-      meta.error &&
-        !Array.isArray(meta.error) &&
-        meta.error.indices?.includes(editConfig.chipIndex) &&
-        'chip_duplicated'
+      (editConfig.isEdit || editConfig.isNewChip) && 'edit-chip-container_edited'
     )
     const labelValueClassName = classnames(
-      classnames(
-        'input-label-value',
-        !editConfig.isValueFocused && 'item_edited',
-        meta.error &&
-          Array.isArray(meta.error) &&
-          meta.error[editConfig.chipIndex]['value'] &&
-          'edit-chip-container-font_invalid'
-      )
+      'input-label-value',
+      !editConfig.isValueFocused && 'item_edited',
+      !isEmpty(get(meta, ['error', chipIndex, 'value'], [])) && !isEmpty(chipData.value) && 'item_edited_invalid'
     )
 
     useLayoutEffect(() => {
@@ -145,23 +135,36 @@ const NewChipForm = React.forwardRef(
     }, [showValidationRules])
 
     useEffect(() => {
-      if (editConfig.isKeyFocused) {
-        refInputKey.current.focus()
-      } else if (editConfig.isValueFocused) {
-        refInputValue.current.focus()
+      if (editConfig.chipIndex === chipIndex) {
+        if (editConfig.isKeyFocused) {
+          refInputKey.current.focus()
+        } else if (editConfig.isValueFocused) {
+          refInputValue.current.focus()
+        }
       }
-    }, [editConfig.isKeyFocused, editConfig.isValueFocused, refInputKey, refInputValue])
+    }, [
+      editConfig.isKeyFocused,
+      editConfig.isValueFocused,
+      refInputKey,
+      refInputValue,
+      chipIndex,
+      editConfig.chipIndex
+    ])
 
     const outsideClick = useCallback(
       (event) => {
-        event.stopPropagation()
-        const elementPath = event.path ?? event.composedPath?.()
+        if (editConfig.chipIndex === chipIndex) {
+          const elementPath = event.path ?? event.composedPath?.()
 
-        if (!elementPath.includes(refInputContainer.current)) {
-          onChange(event, CLICK)
+          if (!elementPath.includes(refInputContainer.current)) {
+            onChange(event, CLICK)
+            window.getSelection().removeAllRanges()
+          } else {
+            event.stopPropagation()
+          }
         }
       },
-      [onChange, refInputContainer]
+      [onChange, refInputContainer, chipIndex, editConfig.chipIndex]
     )
 
     useEffect(() => {
@@ -178,45 +181,51 @@ const NewChipForm = React.forwardRef(
       (event) => {
         event.stopPropagation()
 
-        if (!event.shiftKey && event.key === TAB && editConfig.isValueFocused) {
-          onChange(event, TAB)
-        } else if (event.shiftKey && event.key === TAB && editConfig.isKeyFocused) {
-          onChange(event, TAB_SHIFT)
-        }
+        if (editConfig.chipIndex === chipIndex && isEditMode) {
+          if (!event.shiftKey && event.key === TAB && editConfig.isValueFocused) {
+            onChange(event, TAB)
+          } else if (event.shiftKey && event.key === TAB && editConfig.isKeyFocused) {
+            onChange(event, TAB_SHIFT)
+          }
 
-        if (event.key === BACKSPACE || event.key === DELETE) {
-          setChipData((prevState) => ({
-            keyFieldWidth: editConfig.isKeyFocused ? minWidthInput : prevState.keyFieldWidth,
-            valueFieldWidth: editConfig.isValueFocused
-              ? minWidthValueInput
-              : prevState.valueFieldWidth
-          }))
+          if (event.key === BACKSPACE || event.key === DELETE) {
+            setChipData((prevState) => ({
+              keyFieldWidth: editConfig.isKeyFocused ? minWidthInput : prevState.keyFieldWidth,
+              valueFieldWidth: editConfig.isValueFocused
+                ? minWidthValueInput
+                : prevState.valueFieldWidth
+            }))
+          }
         }
       },
-      [editConfig, onChange]
+      [editConfig, onChange, chipIndex, isEditMode]
     )
 
     const handleOnFocus = useCallback(
       (event) => {
-        if (event.target.name === keyName) {
-          refInputKey.current.selectionStart = refInputKey.current.selectionEnd
+        if (editConfig.chipIndex === chipIndex) {
+          if (event.target.name === keyName) {
+            refInputKey.current.selectionStart = refInputKey.current.selectionEnd
 
-          setEditConfig((prevConfig) => ({
-            ...prevConfig,
-            isKeyFocused: true,
-            isValueFocused: false
-          }))
-        } else {
-          refInputValue.current.selectionStart = refInputValue.current.selectionEnd
+            setEditConfig((prevConfig) => ({
+              ...prevConfig,
+              isKeyFocused: true,
+              isValueFocused: false
+            }))
+          } else {
+            refInputValue.current.selectionStart = refInputValue.current.selectionEnd
 
-          setEditConfig((prevConfig) => ({
-            ...prevConfig,
-            isKeyFocused: false,
-            isValueFocused: true
-          }))
+            setEditConfig((prevConfig) => ({
+              ...prevConfig,
+              isKeyFocused: false,
+              isValueFocused: true
+            }))
+          }
+
+          event && event.stopPropagation()
         }
       },
-      [keyName, refInputKey, refInputValue, setEditConfig]
+      [keyName, refInputKey, refInputValue, setEditConfig, editConfig.chipIndex, chipIndex]
     )
 
     const handleOnChange = useCallback(
@@ -258,8 +267,12 @@ const NewChipForm = React.forwardRef(
     )
 
     useEffect(() => {
-      setSelectedType(editConfig.isKeyFocused ? 'key' : editConfig.isValueFocused ? 'value' : null)
-    }, [editConfig.isKeyFocused, editConfig.isValueFocused])
+      if (editConfig.chipIndex === chipIndex) {
+        setSelectedInput(
+          editConfig.isKeyFocused ? 'key' : editConfig.isValueFocused ? 'value' : null
+        )
+      }
+    }, [editConfig.isKeyFocused, editConfig.isValueFocused, editConfig.chipIndex, chipIndex])
 
     useEffect(() => {
       if (meta.valid && showValidationRules) {
@@ -268,16 +281,16 @@ const NewChipForm = React.forwardRef(
     }, [meta.valid, showValidationRules])
 
     useEffect(() => {
-      if (meta.error && Array.isArray(meta.error)) {
+      if (meta.error) {
         setValidationRules((prevState) => {
           return {
             ...prevState,
-            [selectedType]: prevState[selectedType].map((rule) => {
+            [selectedInput]: prevState[selectedInput].map((rule) => {
               return {
                 ...rule,
-                isValid: !meta.error[editConfig.chipIndex][selectedType]
+                isValid: isEmpty(get(meta, ['error', editConfig.chipIndex, selectedInput], []))
                   ? true
-                  : !meta.error[editConfig.chipIndex][selectedType].some(
+                  : !meta.error[editConfig.chipIndex][selectedInput].some(
                       (err) => err && err.name === rule.name
                     )
               }
@@ -287,28 +300,13 @@ const NewChipForm = React.forwardRef(
 
         !showValidationRules && setShowValidationRules(true)
       }
-    }, [meta.error, selectedType])
+    }, [meta, showValidationRules, selectedInput, editConfig.chipIndex])
 
     const getValidationRules = useCallback(() => {
-      return validationRules[selectedType].map(({ isValid = false, label, name }) => {
+      return validationRules[selectedInput].map(({ isValid = false, label, name }) => {
         return <ValidationTemplate valid={isValid} validationMessage={label} key={name} />
       })
-    }, [meta.error, selectedType, validationRules])
-
-    const validateFieldByRules = (value) => {
-      if (!value) return
-
-      if (!isEmpty(validationRules)) {
-        const [newRules, isValidField] = checkPatternsValidity(validationRules[selectedType], value)
-        const invalidRules = newRules.filter((rule) => !rule.isValid)
-
-        if (!isValidField) {
-          return invalidRules.map((rule) => ({ name: rule.name, label: rule.label }))
-        }
-      }
-
-      return null
-    }
+    }, [selectedInput, validationRules])
 
     return (
       <div
@@ -318,48 +316,65 @@ const NewChipForm = React.forwardRef(
       >
         <NewChipInput
           className={labelKeyClassName}
+          disabled={!isEditMode || editConfig.chipIndex !== chipIndex}
           name={keyName}
           onChange={handleOnChange}
           onFocus={handleOnFocus}
           placeholder="key"
           ref={refInputKey}
           style={{ width: chipData.keyFieldWidth }}
-          validate={validateFieldByRules}
         />
         <div className="edit-chip-separator">:</div>
         <NewChipInput
           className={labelValueClassName}
+          disabled={!isEditMode || editConfig.chipIndex !== chipIndex}
           name={valueName}
           onChange={handleOnChange}
           onFocus={handleOnFocus}
           placeholder="value"
           ref={refInputValue}
           style={{ width: chipData.valueFieldWidth }}
-          validate={validateFieldByRules}
         />
 
-        {Array.isArray(meta.error) && meta.error[editConfig.chipIndex][selectedType] && (
-          <OptionsMenu show={showValidationRules} ref={ref}>
-            {getValidationRules()}
-          </OptionsMenu>
+        {editConfig.chipIndex !== chipIndex && isEditMode && (
+          <button
+            className="edit-chip__icon-close"
+            onClick={(event) => handleRemoveChip(event, chipIndex)}
+          >
+            <Close />
+          </button>
         )}
+
+        {(editConfig.isKeyFocused ? !isEmpty(chipData.key) : !isEmpty(chipData.value)) &&
+          editConfig.chipIndex === chipIndex &&
+          !isEmpty(get(meta, ['error', editConfig.chipIndex, selectedInput], [])) && (
+            <OptionsMenu show={showValidationRules} ref={ref}>
+              {getValidationRules()}
+            </OptionsMenu>
+          )}
       </div>
     )
   }
 )
 
 NewChipForm.defaultProps = {
-  className: ''
+  className: '',
+  validationRules: {}
 }
 
 NewChipForm.propTypes = {
   chip: PropTypes.object.isRequired,
+  chipIndex: PropTypes.number.isRequired,
   chipOptions: CHIP_OPTIONS.isRequired,
   className: PropTypes.string,
   editConfig: PropTypes.shape({}).isRequired,
+  handleRemoveChip: PropTypes.func.isRequired,
+  isEditMode: PropTypes.bool.isRequired,
   keyName: PropTypes.string.isRequired,
+  meta: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   setEditConfig: PropTypes.func.isRequired,
+  validationRules: PropTypes.object,
   valueName: PropTypes.string.isRequired
 }
 

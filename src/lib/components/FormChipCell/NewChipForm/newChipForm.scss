@@ -17,9 +17,11 @@
       font-size: 14px;
       background-color: transparent;
       border: none;
-      margin-right: 5px;
 
       &.item_edited {
+        &_invalid {
+          color: $amaranth;
+        }
         &::placeholder {
           color: $spunPearl;
         }
@@ -48,12 +50,6 @@
   }
 
   &-separator {
-    margin-right: 5px;
-  }
-
-  &__warning {
-    display: inline-flex;
-    align-items: center;
     margin-right: 5px;
   }
 
