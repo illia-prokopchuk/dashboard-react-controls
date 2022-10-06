@@ -18,34 +18,16 @@ import React, { useRef, useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-import FormChip from '../../components/FormChipCell/FormChip/FormChip'
-import TextTooltipTemplate from '../../components/TooltipTemplate/TextTooltipTemplate'
 import Tooltip from '../../components/Tooltip/Tooltip'
+import TextTooltipTemplate from '../../components/TooltipTemplate/TextTooltipTemplate'
 
-import { getFirstScrollableParentUtil } from '../../utils/getFirstScrollableParent.util'
 import { CHIP_OPTIONS } from '../../types'
+import { getFirstScrollableParentUtil } from '../../utils/getFirstScrollableParent.util'
 
 import './hiddenChipsBlock.scss'
 
 const HiddenChipsBlock = React.forwardRef(
-  (
-    {
-      chipClassNames,
-      chipIndex,
-      chipOptions,
-      chips,
-      className,
-      editConfig,
-      handleEditChip,
-      handleIsEdit,
-      handleRemoveChip,
-      handleShowElements,
-      isEditMode,
-      setChipsSizes,
-      setEditConfig
-    },
-    ref
-  ) => {
+  ({ chipClassNames, chipOptions, chips, handleShowElements, textOverflowEllipsis }, ref) => {
     const [isTop, setIsTop] = useState(false)
     const [isRight, setIsRight] = useState(true)
     const [isVisible, setIsVisible] = useState(false)
@@ -60,6 +42,12 @@ const HiddenChipsBlock = React.forwardRef(
       isTop ? 'chip-block-hidden_top' : 'chip-block-hidden_bottom',
       isRight ? 'chip-block-hidden_right' : 'chip-block-hidden_left',
       isVisible && 'chip-block-hidden_visible'
+    )
+    const chipLabelClassNames = classnames('chip__label', textOverflowEllipsis && 'data-ellipsis')
+    const chipValueClassNames = classnames(
+      'chip__value',
+      textOverflowEllipsis && 'data-ellipsis',
+      chipOptions.boldValue && 'chip-value_bold'
     )
 
     const handleResize = useCallback(() => {
@@ -114,10 +102,10 @@ const HiddenChipsBlock = React.forwardRef(
 
     return (
       <div ref={hiddenRef} className={hiddenChipsBlockClassNames}>
-        {chips?.map((element, index) => {
+        {chips?.map((element) => {
           return (
             <Tooltip
-              key={element.value}
+              key={element.id}
               template={
                 <TextTooltipTemplate
                   text={
@@ -134,24 +122,15 @@ const HiddenChipsBlock = React.forwardRef(
                 />
               }
             >
-              <FormChip
-                chip={element}
-                chipClassNames={chipClassNames}
-                chipIndex={index + chipIndex}
-                chipOptions={chipOptions}
-                className={className}
-                editConfig={editConfig}
-                handleEditChip={handleEditChip}
-                handleIsEdit={handleIsEdit}
-                handleRemoveChip={handleRemoveChip}
-                hiddenChips
-                isEditMode={isEditMode}
-                ref={hiddenRef}
-                setChipsSizes={setChipsSizes}
-                setEditConfig={setEditConfig}
-                showChips={true}
-                textOverflowEllipsis
-              />
+              <div className={chipClassNames}>
+                {element.key && <div className={chipLabelClassNames}>{element.key}</div>}
+                {element.value && (
+                  <>
+                    <div className="chip__delimiter">{element.delimiter ?? ':'}</div>
+                    <div className={chipValueClassNames}>{element.value}</div>
+                  </>
+                )}
+              </div>
             </Tooltip>
           )
         })}
@@ -161,26 +140,15 @@ const HiddenChipsBlock = React.forwardRef(
 )
 
 HiddenChipsBlock.defaultProps = {
-  chips: [],
-  chipIndex: 0,
-  editConfig: {},
-  isEditMode: false
+  textOverflowEllipsis: false
 }
 
 HiddenChipsBlock.propTypes = {
   chipClassNames: PropTypes.string.isRequired,
-  chipIndex: PropTypes.number,
   chipOptions: CHIP_OPTIONS.isRequired,
   chips: PropTypes.array.isRequired,
-  className: PropTypes.string,
-  editConfig: PropTypes.shape({}),
-  handleEditChip: PropTypes.func.isRequired,
-  handleIsEdit: PropTypes.func.isRequired,
-  handleRemoveChip: PropTypes.func.isRequired,
   handleShowElements: PropTypes.func.isRequired,
-  isEditMode: PropTypes.bool,
-  setEditConfig: PropTypes.func.isRequired,
-  setChipsSizes: PropTypes.func.isRequired
+  textOverflowEllipsis: PropTypes.bool
 }
 
 export default HiddenChipsBlock

@@ -19,6 +19,9 @@
       border: none;
 
       &.item_edited {
+        &_invalid {
+          color: $amaranth;
+        }
         &::placeholder {
           color: $spunPearl;
         }

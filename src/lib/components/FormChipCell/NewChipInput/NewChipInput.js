@@ -26,7 +26,7 @@ const NewChipInput = React.forwardRef(({ name, onChange, onFocus, ...inputProps 
     onChange(event)
   }
 
-  const handleInputFocus = event => {
+  const handleInputFocus = (event) => {
     input.onFocus(event)
     onFocus(event)
   }

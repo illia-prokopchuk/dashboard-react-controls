@@ -15,6 +15,7 @@ under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
 import { create } from 'react-modal-promise'
+import { differenceWith, isEqual, omit, isEmpty } from 'lodash'
 
 export const openPopUp = (element, props) => {
   return create(element)(props)
@@ -22,3 +23,14 @@ export const openPopUp = (element, props) => {
 
 export const isEveryObjectValueEmpty = (obj) =>
   Object.values(obj).every((item) => !item || item.length === 0)
+
+// Checks, whether two arrays of objects are equal, can omit some keys if their comparison is not necessary
+export const areArraysEqual = (firstArray, secondArray, omitBy = []) => {
+  if (firstArray.length !== secondArray.length) return false
+
+  return isEmpty(
+    differenceWith(firstArray, secondArray, (a, b) => {
+      return isEqual(omit(a, omitBy), omit(b, omitBy))
+    })
+  )
+}

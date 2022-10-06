@@ -3,8 +3,15 @@
 @import '../../scss/mixins';
 
 .chips {
+  @include inputSelectField;
+
+  &__wrapper {
+    padding: 12px 16px;
+  }
+
   &-wrapper {
     display: flex;
+    flex-flow: row wrap;
     align-items: center;
   }
 
@@ -48,5 +55,9 @@
         @include chipsFont(ButtonAddChip);
       }
     }
+  }
+
+  input:disabled {
+    cursor: default;
   }
 }
