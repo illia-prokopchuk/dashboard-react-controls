@@ -99,44 +99,38 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
       withoutBorder = _ref.withoutBorder,
       inputProps = _objectWithoutProperties(_ref, _excluded);
 
-  var _useState = (0, _react.useState)({}),
+  var _useField = (0, _reactFinalForm.useField)(name),
+      input = _useField.input,
+      meta = _useField.meta;
+
+  var _useState = (0, _react.useState)(false),
       _useState2 = _slicedToArray(_useState, 2),
-      fieldMeta = _useState2[0],
-      setFieldMeta = _useState2[1];
+      isInvalid = _useState2[0],
+      setIsInvalid = _useState2[1];
 
-  var _useState3 = (0, _react.useState)({}),
+  var _useState3 = (0, _react.useState)(false),
       _useState4 = _slicedToArray(_useState3, 2),
-      fieldInput = _useState4[0],
-      setFieldInput = _useState4[1];
+      isFocused = _useState4[0],
+      setIsFocused = _useState4[1];
 
-  var _useState5 = (0, _react.useState)(false),
+  var _useState5 = (0, _react.useState)(''),
       _useState6 = _slicedToArray(_useState5, 2),
-      isInvalid = _useState6[0],
-      setIsInvalid = _useState6[1];
+      typedValue = _useState6[0],
+      setTypedValue = _useState6[1];
 
-  var _useState7 = (0, _react.useState)(false),
-      _useState8 = _slicedToArray(_useState7, 2),
-      isFocused = _useState8[0],
-      setIsFocused = _useState8[1];
+  var _useState7 = (0, _react.useState)(RegExp(pattern)),
+      _useState8 = _slicedToArray(_useState7, 1),
+      validationPattern = _useState8[0];
 
-  var _useState9 = (0, _react.useState)(''),
+  var _useState9 = (0, _react.useState)(rules),
       _useState10 = _slicedToArray(_useState9, 2),
-      typedValue = _useState10[0],
-      setTypedValue = _useState10[1];
+      validationRules = _useState10[0],
+      setValidationRules = _useState10[1];
 
-  var _useState11 = (0, _react.useState)(RegExp(pattern)),
-      _useState12 = _slicedToArray(_useState11, 1),
-      validationPattern = _useState12[0];
-
-  var _useState13 = (0, _react.useState)(rules),
-      _useState14 = _slicedToArray(_useState13, 2),
-      validationRules = _useState14[0],
-      setValidationRules = _useState14[1];
-
-  var _useState15 = (0, _react.useState)(false),
-      _useState16 = _slicedToArray(_useState15, 2),
-      showValidationRules = _useState16[0],
-      setShowValidationRules = _useState16[1];
+  var _useState11 = (0, _react.useState)(false),
+      _useState12 = _slicedToArray(_useState11, 2),
+      showValidationRules = _useState12[0],
+      setShowValidationRules = _useState12[1];
 
   var wrapperRef = (0, _react.useRef)();
   (_ref2 = ref) !== null && _ref2 !== void 0 ? _ref2 : ref = wrapperRef;
@@ -148,16 +142,16 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
   var inputWrapperClassNames = (0, _classnames.default)('form-field__wrapper', "form-field__wrapper-".concat(density), disabled && 'form-field__wrapper-disabled', isInvalid && 'form-field__wrapper-invalid', withoutBorder && 'without-border');
   var labelClassNames = (0, _classnames.default)('form-field__label', disabled && 'form-field__label-disabled');
   (0, _react.useEffect)(function () {
-    setTypedValue(String(fieldInput.value)); // convert from number to string
-  }, [fieldInput.value]);
+    setTypedValue(String(input.value)); // convert from number to string
+  }, [input.value]);
   (0, _react.useEffect)(function () {
-    setIsInvalid(fieldMeta.invalid && (fieldMeta.validating || fieldMeta.modified || fieldMeta.submitFailed && fieldMeta.touched));
-  }, [fieldMeta.invalid, fieldMeta.modified, fieldMeta.submitFailed, fieldMeta.touched, fieldMeta.validating]);
+    setIsInvalid(meta.invalid && (meta.validating || meta.modified || meta.submitFailed && meta.touched));
+  }, [meta.invalid, meta.modified, meta.submitFailed, meta.touched, meta.validating]);
   (0, _react.useEffect)(function () {
-    if (fieldMeta.valid && showValidationRules) {
+    if (meta.valid && showValidationRules) {
       setShowValidationRules(false);
     }
-  }, [fieldMeta.valid, showValidationRules]);
+  }, [meta.valid, showValidationRules]);
   (0, _react.useEffect)(function () {
     if (showValidationRules) {
       window.addEventListener('scroll', handleScroll, true);
@@ -172,17 +166,6 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
       inputRef.current.focus();
     }
   }, [focused]);
-  (0, _react.useEffect)(function () {
-    setValidationRules(function () {
-      return rules.map(function (rule) {
-        return _objectSpread(_objectSpread({}, rule), {}, {
-          isValid: !fieldMeta.error || !Array.isArray(fieldMeta.error) ? true : !fieldMeta.error.some(function (err) {
-            return err.name === rule.name;
-          })
-        });
-      });
-    });
-  }, [fieldMeta.error, rules]);
 
   var getValidationRules = function getValidationRules() {
     return validationRules.map(function (_ref3) {
@@ -200,7 +183,7 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
   var handleInputBlur = function handleInputBlur(event) {
     var _event$relatedTarget;
 
-    fieldInput.onBlur && fieldInput.onBlur(event);
+    input.onBlur && input.onBlur(event);
 
     if (!event.relatedTarget || !((_event$relatedTarget = event.relatedTarget) !== null && _event$relatedTarget !== void 0 && _event$relatedTarget.closest('.form-field__suggestion-list'))) {
       setIsFocused(false);
@@ -209,7 +192,7 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
   };
 
   var handleInputFocus = function handleInputFocus(event) {
-    fieldInput.onFocus && fieldInput.onFocus(event);
+    input.onFocus && input.onFocus(event);
     setIsFocused(true);
   };
 
@@ -222,7 +205,7 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
   };
 
   var handleSuggestionClick = function handleSuggestionClick(item) {
-    fieldInput.onChange && fieldInput.onChange(item);
+    input.onChange && input.onChange(item);
     setIsFocused(false);
     onBlur();
   };
@@ -234,7 +217,19 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
     });
   };
 
-  var validateField = function validateField(value, allValues) {
+  (0, _react.useEffect)(function () {
+    setValidationRules(function (prevState) {
+      return prevState.map(function (rule) {
+        return _objectSpread(_objectSpread({}, rule), {}, {
+          isValid: !meta.error || !Array.isArray(meta.error) ? true : !meta.error.some(function (err) {
+            return err.name === rule.name;
+          })
+        });
+      });
+    });
+  }, [meta.error]);
+
+  var validateField = function validateField(value) {
     var valueToValidate = (0, _lodash.isNil)(value) ? '' : String(value);
     if (!valueToValidate && !required || disabled) return;
     var validationError = null;
@@ -264,14 +259,14 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
         if (inputProps.max && +valueToValidate > +inputProps.max) {
           validationError = {
             name: 'maxValue',
-            label: "The maximum value should be ".concat(inputProps.max)
+            label: "Max value is ".concat(inputProps.max)
           };
         }
 
         if (inputProps.min && +valueToValidate < +inputProps.min) {
           validationError = {
             name: 'minValue',
-            label: "The minimum value should be ".concat(inputProps.min)
+            label: "Min value is ".concat(inputProps.min)
           };
         }
       }
@@ -295,7 +290,7 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
     }
 
     if (!validationError && validator) {
-      validationError = validator(value, allValues);
+      validationError = validator(value);
     }
 
     return validationError;
@@ -306,15 +301,6 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
     return inputProps.type === 'number' ? +val : val;
   };
 
-  var setFieldData = (0, _lodash.debounce)(function (input, meta) {
-    if (!(0, _lodash.isEqual)(meta, fieldMeta)) {
-      setFieldMeta(meta);
-    }
-
-    if (!(0, _lodash.isEqual)(input, fieldInput)) {
-      setFieldInput(input);
-    }
-  }, 50);
   return /*#__PURE__*/(0, _jsxRuntime.jsx)(_reactFinalForm.Field, {
     validate: validateField,
     name: name,
@@ -324,7 +310,6 @@ var FormInput = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
 
       var input = _ref4.input,
           meta = _ref4.meta;
-      setFieldData(input, meta);
       return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
         ref: ref,
         className: formFieldClassNames,
@@ -444,7 +429,7 @@ FormInput.defaultProps = {
   pattern: null,
   placeholder: '',
   required: false,
-  step: 1,
+  step: '1',
   suggestionList: [],
   tip: '',
   type: 'text',
@@ -472,7 +457,7 @@ FormInput.propTypes = {
   pattern: _propTypes.default.string,
   placeholder: _propTypes.default.string,
   required: _propTypes.default.bool,
-  step: _propTypes.default.number,
+  step: _propTypes.default.string,
   suggestionList: _propTypes.default.arrayOf(_propTypes.default.string),
   tip: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.element]),
   type: _propTypes.default.string,

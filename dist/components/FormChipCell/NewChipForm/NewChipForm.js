@@ -62,7 +62,7 @@ var NewChipForm = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
       className = _ref.className,
       editConfig = _ref.editConfig,
       handleRemoveChip = _ref.handleRemoveChip,
-      isEditable = _ref.isEditable,
+      isEditMode = _ref.isEditMode,
       keyName = _ref.keyName,
       meta = _ref.meta,
       onChange = _ref.onChange,
@@ -187,7 +187,7 @@ var NewChipForm = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
   var focusChip = (0, _react.useCallback)(function (event) {
     event.stopPropagation();
 
-    if (editConfig.chipIndex === chipIndex && isEditable) {
+    if (editConfig.chipIndex === chipIndex && isEditMode) {
       if (!event.shiftKey && event.key === _constants.TAB && editConfig.isValueFocused) {
         onChange(event, _constants.TAB);
       } else if (event.shiftKey && event.key === _constants.TAB && editConfig.isKeyFocused) {
@@ -203,7 +203,7 @@ var NewChipForm = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
         });
       }
     }
-  }, [editConfig, onChange, chipIndex, isEditable]);
+  }, [editConfig, onChange, chipIndex, isEditMode]);
   var handleOnFocus = (0, _react.useCallback)(function (event) {
     if (editConfig.chipIndex === chipIndex) {
       if (event.target.name === keyName) {
@@ -292,7 +292,7 @@ var NewChipForm = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
     ref: refInputContainer,
     children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_NewChipInput.default, {
       className: labelKeyClassName,
-      disabled: !isEditable || editConfig.chipIndex !== chipIndex,
+      disabled: !isEditMode || editConfig.chipIndex !== chipIndex,
       name: keyName,
       onChange: handleOnChange,
       onFocus: handleOnFocus,
@@ -306,7 +306,7 @@ var NewChipForm = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
       children: ":"
     }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_NewChipInput.default, {
       className: labelValueClassName,
-      disabled: !isEditable || editConfig.chipIndex !== chipIndex,
+      disabled: !isEditMode || editConfig.chipIndex !== chipIndex,
       name: valueName,
       onChange: handleOnChange,
       onFocus: handleOnFocus,
@@ -315,7 +315,7 @@ var NewChipForm = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
       style: {
         width: chipData.valueFieldWidth
       }
-    }), editConfig.chipIndex !== chipIndex && isEditable && /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
+    }), editConfig.chipIndex !== chipIndex && isEditMode && /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
       className: "edit-chip__icon-close",
       onClick: function onClick(event) {
         return handleRemoveChip(event, chipIndex);
@@ -340,7 +340,7 @@ NewChipForm.propTypes = {
   className: _propTypes.default.string,
   editConfig: _propTypes.default.shape({}).isRequired,
   handleRemoveChip: _propTypes.default.func.isRequired,
-  isEditable: _propTypes.default.bool.isRequired,
+  isEditMode: _propTypes.default.bool.isRequired,
   keyName: _propTypes.default.string.isRequired,
   meta: _propTypes.default.object.isRequired,
   onChange: _propTypes.default.func.isRequired,

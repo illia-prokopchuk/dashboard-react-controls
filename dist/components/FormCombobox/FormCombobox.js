@@ -177,7 +177,7 @@ var FormCombobox = function FormCombobox(_ref) {
     setIsInvalid(meta.invalid && (meta.validating || meta.modified || meta.submitFailed && meta.touched));
   }, [meta.invalid, meta.modified, meta.submitFailed, meta.touched, meta.validating]);
   var handleOutsideClick = (0, _react.useCallback)(function (event) {
-    if (comboboxRef.current && !comboboxRef.current.contains(event.target) && suggestionListRef.current && !suggestionListRef.current.contains(event.target)) {
+    if (comboboxRef.current && !comboboxRef.current.contains(event.target)) {
       setSearchIsFocused(false);
       setShowSelectDropdown(false);
       setShowSuggestionList(false);

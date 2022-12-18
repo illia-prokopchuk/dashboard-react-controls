@@ -97,14 +97,14 @@ InputNumberButtons.defaultProps = {
   disabled: false,
   min: null,
   max: null,
-  step: 1
+  step: '1'
 };
 InputNumberButtons.propTypes = {
   disabled: _propTypes.default.bool,
   min: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.number]),
   max: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.number]),
   onChange: _propTypes.default.func.isRequired,
-  step: _propTypes.default.number,
+  step: _propTypes.default.string,
   value: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.number]).isRequired
 };
 

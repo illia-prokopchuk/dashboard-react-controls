@@ -1,0 +1,117 @@
+@import '../../scss/borders';
+@import '../../scss/colors';
+$actionsBlockWidth: 72px;
+
+.form-key-value-table {
+  max-height: 280px;
+  overflow: hidden;
+  overflow-y: auto;
+  background-color: $white;
+
+  &__btn {
+    visibility: hidden;
+  }
+
+  &__body {
+    background-color: inherit;
+  }
+
+  .table-row {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    border-bottom: $primaryBorder;
+
+    &:not(.no-hover):hover {
+      background-color: $alabaster;
+
+      .key-value-table__btn {
+        visibility: visible;
+      }
+    }
+
+    &__last {
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      background-color: inherit;
+      border: 0;
+    }
+  }
+
+  .table-row__header {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    font-weight: bold;
+    font-size: 18px;
+    background-color: inherit;
+    border-top: $primaryBorder;
+  }
+
+  .table-cell {
+    display: flex;
+    align-items: center;
+    padding: 8px 5px 8px 10px;
+    color: $primary;
+  }
+
+  .table-cell__inputs-wrapper {
+    display: flex;
+    width: calc(100% - #{$actionsBlockWidth});
+  }
+
+  .table-cell__key {
+    width: 50%;
+  }
+
+  .table-cell__value {
+    width: 50%;
+  }
+
+  .table-cell__actions {
+    justify-content: flex-end;
+    min-width: $actionsBlockWidth;
+    padding: 0;
+
+    & > * {
+      margin: 0 5px 0 0;
+    }
+  }
+
+  .add-new-item-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 44px;
+    padding: 10px;
+    color: $cornflowerBlue;
+    font-size: 15px;
+    line-height: 18px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+
+      rect {
+        fill: $cornflowerBlue;
+      }
+    }
+  }
+
+  .input-wrapper {
+    width: 100%;
+
+    .input {
+      width: 100%;
+
+      &_edit {
+        border: $primaryBorder;
+      }
+
+      &_invalid {
+        border: $errorBorder;
+      }
+    }
+  }
+}

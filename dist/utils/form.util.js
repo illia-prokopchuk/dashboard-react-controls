@@ -42,7 +42,7 @@ var isEqualValues = function isEqualValues(initialValues, values) {
     return value;
   };
 
-  return !(0, _lodash.isEqual)(JSON.stringify(initialValues, replacer), JSON.stringify(values, replacer));
+  return (0, _lodash.isEqual)(JSON.stringify(initialValues, replacer), JSON.stringify(values, replacer));
 };
 
 exports.isEqualValues = isEqualValues;

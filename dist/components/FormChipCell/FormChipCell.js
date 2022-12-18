@@ -60,7 +60,7 @@ var FormChipCell = function FormChipCell(_ref) {
       delimiter = _ref.delimiter,
       formState = _ref.formState,
       initialValues = _ref.initialValues,
-      isEditable = _ref.isEditable,
+      isEditMode = _ref.isEditMode,
       label = _ref.label,
       name = _ref.name,
       onClick = _ref.onClick,
@@ -103,20 +103,20 @@ var FormChipCell = function FormChipCell(_ref) {
   var chipsCellRef = (0, _react.useRef)();
   var chipsWrapperRef = (0, _react.useRef)();
   var handleShowElements = (0, _react.useCallback)(function () {
-    if (!isEditable || isEditable && visibleChipsMaxLength) {
+    if (!isEditMode || isEditMode && visibleChipsMaxLength) {
       setShowHiddenChips(function (state) {
         return !state;
       });
     }
-  }, [isEditable, visibleChipsMaxLength]);
+  }, [isEditMode, visibleChipsMaxLength]);
   var chips = (0, _react.useMemo)(function () {
-    return isEditable || visibleChipsMaxLength === 'all' ? {
+    return isEditMode || visibleChipsMaxLength === 'all' ? {
       visibleChips: (0, _lodash.get)(formState.values, name),
       hiddenChips: []
     } : (0, _generateChipsList.generateChipsList)((0, _lodash.get)(formState.values, name), visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount);
-  }, [visibleChipsMaxLength, isEditable, visibleChipsCount, formState.values, name]);
+  }, [visibleChipsMaxLength, isEditMode, visibleChipsCount, formState.values, name]);
   var handleResize = (0, _react.useCallback)(function () {
-    if (!isEditable && !(0, _common.isEveryObjectValueEmpty)(chipsSizes)) {
+    if (!isEditMode && !(0, _common.isEveryObjectValueEmpty)(chipsSizes)) {
       var _chipsCellRef$current;
 
       var parentSize = (_chipsCellRef$current = chipsCellRef.current) === null || _chipsCellRef$current === void 0 ? void 0 : _chipsCellRef$current.getBoundingClientRect().width;
@@ -140,18 +140,18 @@ var FormChipCell = function FormChipCell(_ref) {
       setVisibleChipsCount(chipIndex);
       setShowChips(true);
     }
-  }, [chipsSizes, isEditable]);
+  }, [chipsSizes, isEditMode]);
   (0, _react.useEffect)(function () {
     handleResize();
   }, [handleResize, showChips]);
   (0, _react.useEffect)(function () {
-    if (!isEditable) {
+    if (!isEditMode) {
       window.addEventListener('resize', handleResize);
       return function () {
         return window.removeEventListener('resize', handleResize);
       };
     }
-  }, [handleResize, isEditable]);
+  }, [handleResize, isEditMode]);
   (0, _react.useEffect)(function () {
     window.addEventListener('mainResize', handleResize);
     return function () {
@@ -262,7 +262,7 @@ var FormChipCell = function FormChipCell(_ref) {
     event && event.preventDefault();
   }, [editConfig.chipIndex, handleRemoveChip, checkChipsList, formState.values, name]);
   var handleToEditMode = (0, _react.useCallback)(function (event, index) {
-    if (isEditable) {
+    if (isEditMode) {
       event.stopPropagation();
       setEditConfig(function (preState) {
         return _objectSpread(_objectSpread({}, preState), {}, {
@@ -275,7 +275,7 @@ var FormChipCell = function FormChipCell(_ref) {
     }
 
     onClick && onClick();
-  }, [isEditable, onClick]);
+  }, [isEditMode, onClick]);
 
   var validateFields = function validateFields(fieldsArray) {
     var uniquenessValidator = function uniquenessValidator(newValue, idx) {
@@ -378,7 +378,7 @@ var FormChipCell = function FormChipCell(_ref) {
         handleRemoveChip: handleRemoveChip,
         handleShowElements: handleShowElements,
         handleToEditMode: handleToEditMode,
-        isEditable: isEditable,
+        isEditMode: isEditMode,
         name: name,
         ref: {
           chipsCellRef: chipsCellRef,
@@ -406,7 +406,7 @@ FormChipCell.defaultProps = {
     font: 'purple'
   },
   delimiter: null,
-  isEditable: false,
+  isEditMode: false,
   label: null,
   onClick: function onClick() {},
   shortChips: false,
@@ -419,7 +419,7 @@ FormChipCell.propTypes = {
   delimiter: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.element]),
   formState: _propTypes.default.shape({}).isRequired,
   initialValues: _propTypes.default.object.isRequired,
-  isEditable: _propTypes.default.bool,
+  isEditMode: _propTypes.default.bool,
   label: _propTypes.default.string,
   name: _propTypes.default.string.isRequired,
   onClick: _propTypes.default.func,
