@@ -37,7 +37,7 @@ export const isEqualValues = (initialValues, values) => {
     return value
   }
 
-  return !isEqual(JSON.stringify(initialValues, replacer), JSON.stringify(values, replacer))
+  return isEqual(JSON.stringify(initialValues, replacer), JSON.stringify(values, replacer))
 }
 
 export const generateObjectFromKeyValue = (keyValueList = []) => {

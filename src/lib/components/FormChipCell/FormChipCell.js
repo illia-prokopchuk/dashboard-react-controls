@@ -35,7 +35,7 @@ const FormChipCell = ({
   delimiter,
   formState,
   initialValues,
-  isEditable,
+  isEditMode,
   label,
   name,
   onClick,
@@ -61,13 +61,13 @@ const FormChipCell = ({
   const chipsWrapperRef = useRef()
 
   const handleShowElements = useCallback(() => {
-    if (!isEditable || (isEditable && visibleChipsMaxLength)) {
+    if (!isEditMode || (isEditMode && visibleChipsMaxLength)) {
       setShowHiddenChips((state) => !state)
     }
-  }, [isEditable, visibleChipsMaxLength])
+  }, [isEditMode, visibleChipsMaxLength])
 
   let chips = useMemo(() => {
-    return isEditable || visibleChipsMaxLength === 'all'
+    return isEditMode || visibleChipsMaxLength === 'all'
       ? {
           visibleChips: get(formState.values, name),
           hiddenChips: []
@@ -76,10 +76,10 @@ const FormChipCell = ({
           get(formState.values, name),
           visibleChipsMaxLength ? visibleChipsMaxLength : visibleChipsCount
         )
-  }, [visibleChipsMaxLength, isEditable, visibleChipsCount, formState.values, name])
+  }, [visibleChipsMaxLength, isEditMode, visibleChipsCount, formState.values, name])
 
   const handleResize = useCallback(() => {
-    if (!isEditable && !isEveryObjectValueEmpty(chipsSizes)) {
+    if (!isEditMode && !isEveryObjectValueEmpty(chipsSizes)) {
       const parentSize = chipsCellRef.current?.getBoundingClientRect().width
       let maxLength = 0
       let chipIndex = 0
@@ -107,19 +107,19 @@ const FormChipCell = ({
       setVisibleChipsCount(chipIndex)
       setShowChips(true)
     }
-  }, [chipsSizes, isEditable])
+  }, [chipsSizes, isEditMode])
 
   useEffect(() => {
     handleResize()
   }, [handleResize, showChips])
 
   useEffect(() => {
-    if (!isEditable) {
+    if (!isEditMode) {
       window.addEventListener('resize', handleResize)
 
       return () => window.removeEventListener('resize', handleResize)
     }
-  }, [handleResize, isEditable])
+  }, [handleResize, isEditMode])
 
   useEffect(() => {
     window.addEventListener('mainResize', handleResize)
@@ -250,7 +250,7 @@ const FormChipCell = ({
 
   const handleToEditMode = useCallback(
     (event, index) => {
-      if (isEditable) {
+      if (isEditMode) {
         event.stopPropagation()
 
         setEditConfig((preState) => ({
@@ -264,7 +264,7 @@ const FormChipCell = ({
 
       onClick && onClick()
     },
-    [isEditable, onClick]
+    [isEditMode, onClick]
   )
 
   const validateFields = (fieldsArray) => {
@@ -345,7 +345,7 @@ const FormChipCell = ({
           handleRemoveChip={handleRemoveChip}
           handleShowElements={handleShowElements}
           handleToEditMode={handleToEditMode}
-          isEditable={isEditable}
+          isEditMode={isEditMode}
           name={name}
           ref={{ chipsCellRef, chipsWrapperRef }}
           setChipsSizes={setChipsSizes}
@@ -371,7 +371,7 @@ FormChipCell.defaultProps = {
     font: 'purple'
   },
   delimiter: null,
-  isEditable: false,
+  isEditMode: false,
   label: null,
   onClick: () => {},
   shortChips: false,
@@ -385,7 +385,7 @@ FormChipCell.propTypes = {
   delimiter: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   formState: PropTypes.shape({}).isRequired,
   initialValues: PropTypes.object.isRequired,
-  isEditable: PropTypes.bool,
+  isEditMode: PropTypes.bool,
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func,

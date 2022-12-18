@@ -41,7 +41,7 @@ const FormChipCellView = React.forwardRef(
       handleRemoveChip,
       handleShowElements,
       handleToEditMode,
-      isEditable,
+      isEditMode,
       name,
       setChipsSizes,
       setEditConfig,
@@ -60,11 +60,11 @@ const FormChipCellView = React.forwardRef(
       chipOptions.font && `button-add-font_${chipOptions.font}`,
       chipOptions.density && `button-add-density_${chipOptions.density}`
     )
-    const wrapperClassNames = classnames('chips-wrapper', isEditable && 'fixed-max-width')
+    const wrapperClassNames = classnames('chips-wrapper', isEditMode && 'fixed-max-width')
     const chipClassNames = classnames(
       'chip',
       'chip__content',
-      isEditable && 'data-ellipsis',
+      isEditMode && 'data-ellipsis',
       shortChips && 'chip_short',
       chips.hiddenChips && 'chip_hidden',
       chipOptions.density && `chip-density_${chipOptions.density}`,
@@ -72,8 +72,8 @@ const FormChipCellView = React.forwardRef(
       chipOptions.background && `chip-background_${chipOptions.background}`,
       chipOptions.borderColor && `chip-border_${chipOptions.borderColor}`,
       chipOptions.font && `chip-font_${chipOptions.font}`,
-      isEditable && 'editable',
-      (showChips || isEditable) && 'chip_visible'
+      isEditMode && 'editable',
+      (showChips || isEditMode) && 'chip_visible'
     )
 
     return (
@@ -84,7 +84,7 @@ const FormChipCellView = React.forwardRef(
           }
 
           return (
-            (isEditable || !isEveryObjectValueEmpty(fields)) && (
+            (isEditMode || !isEveryObjectValueEmpty(fields)) && (
               <div className="chips-cell" ref={chipsCellRef}>
                 <div className={wrapperClassNames} ref={chipsWrapperRef}>
                   {fields.map((contentItem, index) => {
@@ -121,7 +121,7 @@ const FormChipCellView = React.forwardRef(
                                 handleRemoveChip(event, fields, index)
                               }
                               handleToEditMode={handleToEditMode}
-                              isEditable={isEditable}
+                              isEditMode={isEditMode}
                               keyName={`${contentItem}.key`}
                               meta={meta}
                               ref={chipsCellRef}
@@ -157,7 +157,7 @@ const FormChipCellView = React.forwardRef(
                     )}
                   </div>
 
-                  {isEditable && (
+                  {isEditMode && (
                     <button
                       className={buttonAddClassNames}
                       onClick={(e) => handleAddNewChip(e, fields)}
@@ -184,7 +184,7 @@ FormChipCellView.defaultProps = {
     density: 'dense',
     font: 'purple'
   },
-  isEditable: false,
+  isEditMode: false,
   shortChips: false,
   validationRules: {}
 }
@@ -198,7 +198,7 @@ FormChipCellView.propTypes = {
   handleRemoveChip: PropTypes.func.isRequired,
   handleShowElements: PropTypes.func.isRequired,
   handleToEditMode: PropTypes.func.isRequired,
-  isEditable: PropTypes.bool,
+  isEditMode: PropTypes.bool,
   name: PropTypes.string.isRequired,
   setChipsSizes: PropTypes.func.isRequired,
   setEditConfig: PropTypes.func.isRequired,

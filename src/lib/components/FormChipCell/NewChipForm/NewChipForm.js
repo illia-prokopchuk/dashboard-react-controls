@@ -39,7 +39,7 @@ const NewChipForm = React.forwardRef(
       className,
       editConfig,
       handleRemoveChip,
-      isEditable,
+      isEditMode,
       keyName,
       meta,
       onChange,
@@ -193,7 +193,7 @@ const NewChipForm = React.forwardRef(
       (event) => {
         event.stopPropagation()
 
-        if (editConfig.chipIndex === chipIndex && isEditable) {
+        if (editConfig.chipIndex === chipIndex && isEditMode) {
           if (!event.shiftKey && event.key === TAB && editConfig.isValueFocused) {
             onChange(event, TAB)
           } else if (event.shiftKey && event.key === TAB && editConfig.isKeyFocused) {
@@ -210,7 +210,7 @@ const NewChipForm = React.forwardRef(
           }
         }
       },
-      [editConfig, onChange, chipIndex, isEditable]
+      [editConfig, onChange, chipIndex, isEditMode]
     )
 
     const handleOnFocus = useCallback(
@@ -328,7 +328,7 @@ const NewChipForm = React.forwardRef(
       >
         <NewChipInput
           className={labelKeyClassName}
-          disabled={!isEditable || editConfig.chipIndex !== chipIndex}
+          disabled={!isEditMode || editConfig.chipIndex !== chipIndex}
           name={keyName}
           onChange={handleOnChange}
           onFocus={handleOnFocus}
@@ -339,7 +339,7 @@ const NewChipForm = React.forwardRef(
         <div className="edit-chip-separator">:</div>
         <NewChipInput
           className={labelValueClassName}
-          disabled={!isEditable || editConfig.chipIndex !== chipIndex}
+          disabled={!isEditMode || editConfig.chipIndex !== chipIndex}
           name={valueName}
           onChange={handleOnChange}
           onFocus={handleOnFocus}
@@ -348,7 +348,7 @@ const NewChipForm = React.forwardRef(
           style={{ width: chipData.valueFieldWidth }}
         />
 
-        {editConfig.chipIndex !== chipIndex && isEditable && (
+        {editConfig.chipIndex !== chipIndex && isEditMode && (
           <button
             className="edit-chip__icon-close"
             onClick={(event) => handleRemoveChip(event, chipIndex)}
@@ -381,7 +381,7 @@ NewChipForm.propTypes = {
   className: PropTypes.string,
   editConfig: PropTypes.shape({}).isRequired,
   handleRemoveChip: PropTypes.func.isRequired,
-  isEditable: PropTypes.bool.isRequired,
+  isEditMode: PropTypes.bool.isRequired,
   keyName: PropTypes.string.isRequired,
   meta: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,

@@ -112,12 +112,7 @@ const FormCombobox = ({
 
   const handleOutsideClick = useCallback(
     (event) => {
-      if (
-        comboboxRef.current &&
-        !comboboxRef.current.contains(event.target) &&
-        suggestionListRef.current &&
-        !suggestionListRef.current.contains(event.target)
-      ) {
+      if (comboboxRef.current && !comboboxRef.current.contains(event.target)) {
         setSearchIsFocused(false)
         setShowSelectDropdown(false)
         setShowSuggestionList(false)
