@@ -59,7 +59,7 @@ const SelectOption = ({ item, name, onClick, multiple, selectedId, withSelectedI
             </span>
           )}
           {item.status && <span className={`state-${item.status}-job status`} />}
-          <Tooltip template={<TextTooltipTemplate text={item.label} />}><span>{item.label}</span></Tooltip>
+          <span>{item.label}</span>
         </div>
         {withSelectedIcon && item.id === selectedId && <Checkmark className="checkmark" />}
       </div>
