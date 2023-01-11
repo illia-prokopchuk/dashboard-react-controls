@@ -50,11 +50,19 @@ const PopUpDialog = ({
       const elementRect = customPosition.element.current.getBoundingClientRect()
       const popUpRect = popUpOverlayRef.current.getBoundingClientRect()
       const [verticalPosition, horizontalPosition] = customPosition.position.split('-')
-
-      const topPosition =
-        verticalPosition === 'top' ? elementRect.top - popUpRect.height - 5 : elementRect.bottom + 5
       const leftPosition =
         horizontalPosition === 'left' ? elementRect.right - popUpRect.width : elementRect.left
+      let topPosition
+
+      if (verticalPosition === 'top') {
+        topPosition =
+          elementRect.top > popUpRect.height ? elementRect.top - popUpRect.height - 5 : 5
+      } else {
+        topPosition =
+          popUpRect.height + elementRect.bottom > window.innerHeight
+            ? window.innerHeight - popUpRect.height - 5
+            : elementRect.bottom + 5
+      }
 
       popUpOverlayRef.current.style.top = `${topPosition}px`
 
