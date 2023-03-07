@@ -146,6 +146,10 @@ const FormInput = React.forwardRef(
       })
     }
 
+    const isValueEmptyAndValid = (value) => {
+      return (!value && !required) || disabled
+    }
+
     const handleInputBlur = (event) => {
       input.onBlur && input.onBlur(event)
 
@@ -183,7 +187,8 @@ const FormInput = React.forwardRef(
 
     const validateField = (value, allValues) => {
       let valueToValidate = isNil(value) ? '' : String(value)
-      if ((!valueToValidate && !required) || disabled) return
+
+      if (isValueEmptyAndValid(valueToValidate)) return
 
       let validationError = null
 
@@ -231,10 +236,14 @@ const FormInput = React.forwardRef(
     }
 
     const validateFieldAsync = debounceAsync(async (value, allValues) => {
-      let validationError = validateField(value, allValues)
+      let valueToValidate = isNil(value) ? '' : String(value)
+
+      if (isValueEmptyAndValid(valueToValidate)) return
+
+      let validationError = validateField(valueToValidate, allValues)
 
       if (!isEmpty(rules)) {
-        const [newRules, isValidField] = await checkPatternsValidityAsync(rules, value)
+        const [newRules, isValidField] = await checkPatternsValidityAsync(rules, valueToValidate)
 
         const invalidRules = newRules.filter((rule) => !rule.isValid)
 
