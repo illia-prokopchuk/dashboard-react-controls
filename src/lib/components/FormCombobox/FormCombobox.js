@@ -263,7 +263,7 @@ const FormCombobox = ({
     }
   }, [input, onBlur, onFocus, showSelectDropdown])
 
-  const validateField = (value, allValues) => {
+  const validateField = (value = '', allValues) => {
     const valueToValidate = value.startsWith(selectValue.id)
       ? value.substring(selectValue.id.length)
       : value ?? ''
