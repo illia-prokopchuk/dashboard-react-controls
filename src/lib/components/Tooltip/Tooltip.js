@@ -38,55 +38,66 @@ const Tooltip = ({ children, className, hidden, template, textShow }) => {
     setShow(false)
   }
 
-  const handleMouseLeave = () => {
-    setShow(false)
-  }
+  const handleMouseLeave = useCallback((event) => {
+    if (
+      tooltipRef.current &&
+      !tooltipRef.current.contains(event.relatedTarget) &&
+      parentRef.current &&
+      !parentRef.current.contains(event.relatedTarget)
+    ) {
+      setShow(false)
+    }
+  }, [])
 
   const handleMouseEnter = useCallback(
     (event) => {
-      const [child] = parentRef.current.childNodes
-      let show =
-        !hidden &&
-        (textShow
-          ? true
-          : !child
-          ? false
-          : child.nodeType !== Node.TEXT_NODE ||
-            /*
-          If the child node is a text node and the text of the child node inside the container is greater than the width of the container, then show tooltip.
-        */
-            (child.nodeType === Node.TEXT_NODE &&
-              parentRef.current.scrollWidth > parentRef.current.offsetWidth))
-      if (show) {
-        setShow(true)
-        let { height, top, bottom } = parentRef?.current?.getBoundingClientRect() ?? {}
-        const { height: tooltipHeight, width: tooltipWidth } =
-          tooltipRef.current?.getBoundingClientRect() ?? {
-            height: 0,
-            width: 0
-          }
-        const leftPosition = event.x - (event.x + tooltipWidth - window.innerWidth + offset)
-        const left =
-          event.x + tooltipWidth + offset > window.innerWidth
-            ? leftPosition > offset
-              ? leftPosition
-              : offset
-            : event.x + offset
+      if (!show) {
+        const [child] = parentRef.current.childNodes
+        let show =
+          !hidden &&
+          (textShow
+            ? true
+            : !child
+            ? false
+            : child.nodeType !== Node.TEXT_NODE ||
+              /*
+            If the child node is a text node and the text of the child node inside the container is greater than the width of the container, then show tooltip.
+          */
+              (child.nodeType === Node.TEXT_NODE &&
+                parentRef.current.scrollWidth > parentRef.current.offsetWidth))
+        if (show) {
+          setShow(true)
+          let { height, top, bottom } = parentRef?.current?.getBoundingClientRect() ?? {}
+          const { height: tooltipHeight, width: tooltipWidth } =
+            tooltipRef.current?.getBoundingClientRect() ?? {
+              height: 0,
+              width: 0
+            }
+          const leftPosition = event.x - (event.x + tooltipWidth - window.innerWidth + offset)
+          const left =
+            event.x + tooltipWidth + offset > window.innerWidth
+              ? leftPosition > offset
+                ? leftPosition
+                : offset
+              : event.x + offset
 
-        if (top + height + offset + tooltipHeight >= window.innerHeight) {
-          setStyle({
-            top: bottom - height - offset - tooltipHeight,
-            left
-          })
-        } else {
-          setStyle({
-            top: top + height + offset,
-            left
-          })
+          if (top + height + offset + tooltipHeight >= window.innerHeight) {
+            const topPosition = bottom - height - offset - tooltipHeight
+
+            setStyle({
+              top: topPosition > 0 ? topPosition : offset,
+              left
+            })
+          } else {
+            setStyle({
+              top: top + height + offset,
+              left
+            })
+          }
         }
       }
     },
-    [hidden, textShow]
+    [hidden, textShow, show]
   )
 
   const clearStyles = debounce(() => {
@@ -96,17 +107,30 @@ const Tooltip = ({ children, className, hidden, template, textShow }) => {
   }, 100)
 
   useEffect(() => {
-    const node = parentRef.current
-    if (node) {
-      node.addEventListener('mouseenter', handleMouseEnter)
-      node.addEventListener('mouseleave', handleMouseLeave)
+    const parentNode = parentRef.current
+
+    if (parentNode) {
+      parentNode.addEventListener('mouseenter', handleMouseEnter)
+      parentNode.addEventListener('mouseleave', handleMouseLeave)
 
       return () => {
-        node.removeEventListener('mouseenter', handleMouseEnter)
-        node.removeEventListener('mouseleave', handleMouseLeave)
+        parentNode.removeEventListener('mouseenter', handleMouseEnter)
+        parentNode.removeEventListener('mouseleave', handleMouseLeave)
       }
     }
-  }, [parentRef, handleMouseEnter])
+  }, [parentRef, handleMouseEnter, handleMouseLeave])
+
+  useEffect(() => {
+    const tooltipNode = tooltipRef.current
+
+    if (tooltipNode && show) {
+      tooltipNode.addEventListener('mouseleave', handleMouseLeave)
+
+      return () => {
+        tooltipNode.removeEventListener('mouseleave', handleMouseLeave)
+      }
+    }
+  }, [tooltipRef, handleMouseEnter, handleMouseLeave, show])
 
   useEffect(() => {
     if (show) {
