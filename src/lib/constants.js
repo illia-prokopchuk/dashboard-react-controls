@@ -63,3 +63,7 @@ export const MODAL_MD = 'md'
 export const MODAL_LG = 'lg'
 export const MODAL_MIN = 'min'
 export const MODAL_MAX = 'max'
+
+/*=========== SELECT =============*/
+
+export const SELECT_OPTION_ID_PREFIX = 'id-'
