@@ -53,6 +53,10 @@ export const useFormTable = (formState) => {
           editingItemRef.current.ui.fieldsPath,
           editingItemRef.current.ui.index
         )
+
+        if (editingItemRef.current.ui.index === 0) {
+          formState.form.mutators.concat(editingItemRef.current.ui.fieldsPath, [])
+        }
       } else if (editingItemRef.current) {
         formState.form.mutators.update(
           editingItemRef.current.ui.fieldsPath,
