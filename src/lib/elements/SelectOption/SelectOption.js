@@ -21,7 +21,6 @@ import classnames from 'classnames'
 import { FormCheckBox, Tooltip, TextTooltipTemplate } from '../../components'
 
 import { SELECT_OPTION } from '../../types'
-import { SELECT_OPTION_ID_PREFIX } from '../../constants'
 
 import { ReactComponent as Checkmark } from '../../images/checkmark.svg'
 
@@ -51,7 +50,7 @@ const SelectOption = ({ item, name, onClick, multiple, selectedId, withSelectedI
       onClick={() => {
         !item.disabled && onClick(item.id)
       }}
-      id={`${SELECT_OPTION_ID_PREFIX}${item.id}`}
+      data-custom-id={item.id}
     >
       <div className="label-row">
         <div className="data-ellipsis select__item-label">
@@ -86,7 +85,6 @@ SelectOption.defaultProps = {
 }
 
 SelectOption.propTypes = {
-  disabled: PropTypes.bool,
   name: PropTypes.string.isRequired,
   item: SELECT_OPTION.isRequired,
   onClick: PropTypes.func,

@@ -26,7 +26,7 @@ import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
 import Tooltip from '../Tooltip/Tooltip'
 
 import { SELECT_OPTIONS } from '../../types'
-import { SELECT_OPTION_ID_PREFIX, TERTIARY_BUTTON } from '../../constants'
+import { TERTIARY_BUTTON } from '../../constants'
 
 import { ReactComponent as Caret } from '../../images/dropdown.svg'
 
@@ -186,9 +186,7 @@ const FormSelect = ({
   }, [clickHandler, handleScroll, isOpen])
 
   const scrollOptionToView = useCallback(() => {
-    const selectedOptionEl = optionsListRef.current.querySelector(
-      `#${SELECT_OPTION_ID_PREFIX}${input.value}`
-    )
+    const selectedOptionEl = optionsListRef.current.querySelector(`[data-custom-id="${input.value}"]`)
 
     if (!selectedOptionEl) return
 
