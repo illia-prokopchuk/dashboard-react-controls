@@ -54,14 +54,21 @@ const SelectOption = ({ item, name, onClick, multiple, selectedId, withSelectedI
     >
       <div className="label-row">
         <div className="data-ellipsis select__item-label">
-          <div className=" select__item-main-label">
+          <div className="select__item-main-label">
             {item.icon && (
               <span data-testid="select-icon" className="select__item-icon">
                 {item.icon}
               </span>
             )}
             {item.status && <span className={`state-${item.status}-job status`} />}
-            <Tooltip template={<TextTooltipTemplate text={item.label} />}>{item.label}</Tooltip>
+            {item.htmlChildren ? (
+              <Tooltip
+                htmlChildren={item.htmlChildren}
+                template={<TextTooltipTemplate text={item.label} />}
+              />
+            ) : (
+              <Tooltip template={<TextTooltipTemplate text={item.label} />}>{item.label}</Tooltip>
+            )}
           </div>
           {item.subLabel && (
             <Tooltip

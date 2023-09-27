@@ -108,6 +108,7 @@ export const INPUT_LINK = PropTypes.shape({
 export const SELECT_OPTION = PropTypes.shape({
   disabled: PropTypes.bool,
   hidden: PropTypes.bool,
+  htmlChildren: PropTypes.string,
   icon: PropTypes.element,
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
