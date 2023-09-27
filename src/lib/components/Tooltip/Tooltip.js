@@ -25,7 +25,7 @@ import { isEveryObjectValueEmpty } from '../../utils/common.util'
 
 import './tooltip.scss'
 
-const Tooltip = ({ children, className, hidden, template, textShow }) => {
+const Tooltip = ({ children, className, htmlChildren, hidden, template, textShow }) => {
   const [show, setShow] = useState(false)
   const [style, setStyle] = useState({})
   const tooltipClassNames = classnames('data-ellipsis', 'tooltip-wrapper', className)
@@ -150,9 +150,18 @@ const Tooltip = ({ children, className, hidden, template, textShow }) => {
 
   return (
     <>
-      <div data-testid="tooltip-wrapper" ref={parentRef} className={tooltipClassNames}>
-        {children}
-      </div>
+      {htmlChildren ? (
+        <div
+          data-testid="tooltip-wrapper"
+          ref={parentRef}
+          className={tooltipClassNames}
+          dangerouslySetInnerHTML={{ __html: htmlChildren }}
+        />
+      ) : (
+        <div data-testid="tooltip-wrapper" ref={parentRef} className={tooltipClassNames}>
+          {children}
+        </div>
+      )}
       {!hidden &&
         createPortal(
           <CSSTransition classNames="fade" in={show} timeout={duration} unmountOnExit>
@@ -181,6 +190,7 @@ Tooltip.defaultProps = {
 Tooltip.propTypes = {
   className: PropTypes.string,
   hidden: PropTypes.bool,
+  htmlChildren: PropTypes.string,
   template: PropTypes.element.isRequired,
   textShow: PropTypes.bool
 }
