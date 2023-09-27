@@ -111,6 +111,7 @@ export const SELECT_OPTION = PropTypes.shape({
   icon: PropTypes.element,
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+  labelHtml: PropTypes.string,
   status: PropTypes.string,
   subLabel: PropTypes.string
 })
