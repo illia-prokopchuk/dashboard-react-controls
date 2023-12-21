@@ -198,6 +198,7 @@ const NewChipForm = React.forwardRef(
 
           if (event.key === BACKSPACE || event.key === DELETE) {
             setChipData((prevState) => ({
+              ...prevState,
               keyFieldWidth: editConfig.isKeyFocused ? minWidthInput : prevState.keyFieldWidth,
               valueFieldWidth: editConfig.isValueFocused
                 ? minWidthValueInput
