@@ -21,7 +21,11 @@ import classnames from 'classnames'
 import Button from '../Button/Button'
 import PopUpDialog from '../PopUpDialog/PopUpDialog'
 
-import { CONFIRM_DIALOG_CANCEL_BUTTON, CONFIRM_DIALOG_SUBMIT_BUTTON } from '../../types'
+import {
+  CONFIRM_DIALOG_CANCEL_BUTTON,
+  CONFIRM_DIALOG_MESSAGE,
+  CONFIRM_DIALOG_SUBMIT_BUTTON
+} from '../../types'
 
 import './confirmDialog.scss'
 
@@ -107,7 +111,7 @@ ConfirmDialog.propTypes = {
   confirmButton: CONFIRM_DIALOG_SUBMIT_BUTTON,
   customPosition: PropTypes.object,
   header: PropTypes.string,
-  message: PropTypes.string,
+  message: CONFIRM_DIALOG_MESSAGE,
   messageOnly: PropTypes.bool
 }
 

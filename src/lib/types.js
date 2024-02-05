@@ -86,6 +86,7 @@ export const CONFIRM_DIALOG_CANCEL_BUTTON = PropTypes.shape({
   label: PropTypes.string.isRequired,
   variant: PropTypes.string.isRequired
 })
+export const CONFIRM_DIALOG_MESSAGE = PropTypes.oneOfType([PropTypes.element, PropTypes.string])
 export const CONFIRM_DIALOG_SUBMIT_BUTTON = PropTypes.shape({
   handler: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
