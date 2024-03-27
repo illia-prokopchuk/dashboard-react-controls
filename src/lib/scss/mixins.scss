@@ -976,6 +976,38 @@
   }
 }
 
+@mixin statsAddBorderAndTextColor($border, $textColor) {
+  &.selected {
+    border: $border;
+
+    .stats__counter {
+      color: $textColor;
+    }
+  }
+
+  &:hover {
+    border: $border;
+  }
+}
+
+@mixin stats() {
+  &_total {
+    @include statsAddBorderAndTextColor($totalBorder, $black)
+  }
+
+  &_running {
+    @include statsAddBorderAndTextColor($runningBorder, $pictonBlue)
+  }
+
+  &_failed {
+    @include statsAddBorderAndTextColor($failedBorder, $amaranth)
+  }
+
+  &_completed {
+    @include statsAddBorderAndTextColor($completedBorder, $brightTurquoise)
+  }
+}
+
 @mixin gradient($type) {
   @if $type == 'card' {
     background: linear-gradient(180deg, $brightTurquoise 4px, $white 4px);
