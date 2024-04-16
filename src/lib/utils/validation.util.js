@@ -391,6 +391,10 @@ const validationRules = {
       value: [generateRule.beginEndNotWith('s')]
     }
   },
+  nodeSelectors: {
+    key: commonRules.k8sLabels.key,
+    value: commonRules.k8sLabels.value
+  },
   environmentVariables: {
     secretName: [
       generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
