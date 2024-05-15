@@ -67,36 +67,40 @@ const Tooltip = ({ children, className, hidden, id, renderChildAsHtml, template,
           */
               (child.nodeType === Node.TEXT_NODE &&
                 parentRef.current.scrollWidth > parentRef.current.offsetWidth))
-        if (show) {
-          setShow(true)
-          let { height, top, bottom } = parentRef?.current?.getBoundingClientRect() ?? {}
-          const { height: tooltipHeight, width: tooltipWidth } =
+
+        setShow(show)
+
+        setTimeout(() => {
+          if (show) {
+            let { height, top, bottom } = parentRef?.current?.getBoundingClientRect() ?? {}
+            const { height: tooltipHeight, width: tooltipWidth } =
             tooltipRef.current?.getBoundingClientRect() ?? {
               height: 0,
               width: 0
             }
-          const leftPosition = event.x - (event.x + tooltipWidth - window.innerWidth + offset)
-          const left =
-            event.x + tooltipWidth + offset > window.innerWidth
-              ? leftPosition > offset
-                ? leftPosition
-                : offset
-              : event.x + offset
+            const leftPosition = event.x - (event.x + tooltipWidth - window.innerWidth + offset)
+            const left =
+              event.x + tooltipWidth + offset > window.innerWidth
+                ? leftPosition > offset
+                  ? leftPosition
+                  : offset
+                : event.x + offset
 
-          if (top + height + offset + tooltipHeight >= window.innerHeight) {
-            const topPosition = bottom - height - offset - tooltipHeight
+            if (top + height + offset + tooltipHeight >= window.innerHeight) {
+              const topPosition = bottom - height - offset - tooltipHeight
 
-            setStyle({
-              top: topPosition > 0 ? topPosition : offset,
-              left
-            })
-          } else {
-            setStyle({
-              top: top + height + offset,
-              left
-            })
+              setStyle({
+                top: topPosition > 0 ? topPosition : offset,
+                left
+              })
+            } else {
+              setStyle({
+                top: top + height + offset,
+                left
+              })
+            }
           }
-        }
+        }, 0)
       }
     },
     [hidden, textShow, show]
