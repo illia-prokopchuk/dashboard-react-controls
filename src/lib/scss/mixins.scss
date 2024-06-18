@@ -91,13 +91,19 @@
   }
 }
 
-@mixin statusState($color) {
+@mixin statusState($color, $bordered) {
   display: inline-block;
   width: 8px;
   height: 8px;
   min-width: 8px;
-  background-color: $color;
   border-radius: 50%;
+
+  @if $bordered == true {
+    background-color: transparent;
+    border: 1.5px solid $color;
+  } @else {
+    background-color: $color;
+  }
 }
 
 @mixin chipFont($color) {
