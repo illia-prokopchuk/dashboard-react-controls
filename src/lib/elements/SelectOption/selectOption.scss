@@ -48,7 +48,7 @@
     .all {
       margin: 0;
 
-      @include statusState(none);
+      @include statusState(none, false);
     }
 
     .label-row {
