@@ -250,15 +250,6 @@ const generateRule = {
       label: ValidationConstants.REQUIRED.LABEL,
       pattern: new RegExp('\\S')
     }
-  },
-  checkForValidCustomLabels: (internalLabels) => {
-    return {
-      name: 'customLabels',
-      label: 'System-defined labels cannot be modified.',
-      pattern: (value) => {
-        return !internalLabels.includes(value)
-      }
-    }
   }
 }
 
@@ -381,8 +372,7 @@ const validationRules = {
       generateRule.beginEndWith('a-z A-Z 0-9'),
       generateRule.length({ max: 56 })
     ],
-    combobox: [generateRule.required()],
-    labels: [(internalLabels) => generateRule.checkForValidCustomLabels(internalLabels)]
+    combobox: [generateRule.required()]
   },
   project: {
     name: [
@@ -393,10 +383,7 @@ const validationRules = {
       generateRule.required()
     ],
     labels: {
-      key: [
-        ...commonRules.k8sLabels.key,
-        (internalLabels) => generateRule.checkForValidCustomLabels(internalLabels)
-      ],
+      key: commonRules.k8sLabels.key,
       value: commonRules.k8sLabels.value
     },
     params: {
@@ -431,8 +418,7 @@ const validationRules = {
       key: [
         generateRule.validCharactersWithPrefix('a-z A-Z 0-9 - _ .'),
         generateRule.beginEndWith('a-z A-Z 0-9'),
-        generateRule.length({ max: 75 }),
-        (internalLabels) => generateRule.checkForValidCustomLabels(internalLabels)
+        generateRule.length({ max: 75 })
       ],
       value: generateRule.length({ max: 255 })
     }
@@ -443,23 +429,31 @@ const validationRules = {
  * Returns the list of validation rules for `type`, optionally appending provided additional rules.
  * @function getValidationRules
  * @param {string} type - The property path to the list of validation rules.
- * @param {Array.<Object>} [additionalRules] - Additional rules to append.
- * @param {Array.<Object>} [customData] - Additional data to be passed to the custom rule functions.
+ * @param {Array.<Object> | Object} [additionalRules] - Additional rules or rule to append.
  * @returns {Array.<Object>} The rule list of type `type` with `additionalRules` appended to it if provided.
  */
-export const getValidationRules = (type, additionalRules, customData) => {
+export const getValidationRules = (type, additionalRules) => {
   return lodash
     .chain(validationRules)
     .get(type)
     .defaultTo([])
     .cloneDeep()
-    .map((rule) => {
-      if (typeof rule === 'function') {
-        return rule(customData)
-      }
-
-      return rule
-    })
     .concat(lodash.defaultTo(additionalRules, []))
     .value()
+}
+
+/**
+ * Creates a validation rule to ensure system-defined labels cannot be modified.
+ * @function getInternalLabelsValidationRule
+ * @param {string} internalLabels - An array of defined labels that should not be modified.
+ * @returns {Object} The rule that checks if a value is not in the internal labels.
+ */
+export const getInternalLabelsValidationRule = internalLabels => {
+  return {
+    name: 'customLabels',
+    label: 'System-defined labels cannot be modified.',
+    pattern: value => {
+      return !internalLabels.includes(value)
+    }
+  }
 }

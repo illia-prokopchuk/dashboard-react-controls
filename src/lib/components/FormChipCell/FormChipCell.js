@@ -321,7 +321,7 @@ const FormChipCell = ({
     return errorData
   }
 
-  const validateChip = ({ key, value }) => {
+  const validateChip = ({ key, value, disabled }) => {
     const validateField = (value, field) => {
       const [newRules, isValidField] = checkPatternsValidity(
         validationRules[field].filter((rule) => rule.pattern),
@@ -335,7 +335,7 @@ const FormChipCell = ({
       return invalidRules.map((rule) => ({ name: rule.name, label: rule.label }))
     }
 
-    return [validateField(key, 'key'), validateField(value, 'value')]
+    return disabled ? [null, null] : [validateField(key, 'key'), validateField(value, 'value')]
   }
 
   return (
