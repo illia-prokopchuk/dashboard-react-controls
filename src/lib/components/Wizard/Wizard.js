@@ -138,7 +138,7 @@ const Wizard = ({
     defaultActions.push(
       <Button
         id="wizard-btn-next"
-        disabled={stepConfig.nextIsDisabled || isLastStep}
+        disabled={stepConfig?.nextIsDisabled || isLastStep}
         onClick={goToNextStep}
         label={'Next'}
         type="button"
