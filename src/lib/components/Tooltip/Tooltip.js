@@ -41,11 +41,9 @@ const Tooltip = ({ children, className, hidden, id, renderChildAsHtml, template,
 
   const handleMouseLeave = useCallback((event) => {
     if (
-      (tooltipRef.current &&
-        !tooltipRef.current.contains(event.relatedTarget) &&
-        parentRef.current &&
-        !parentRef.current.contains(event.relatedTarget)) ||
-      hidden
+      !tooltipRef.current || hidden ||
+      (tooltipRef.current && !tooltipRef.current.contains(event.relatedTarget) &&
+        parentRef.current && !parentRef.current.contains(event.relatedTarget))
     ) {
       setShow(false)
     }
