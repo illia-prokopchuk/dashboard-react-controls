@@ -143,12 +143,12 @@ const generateRule = {
       pattern: new RegExp('[^' + convertToPattern(chars) + ']$')
     }
   },
-  beginEndWith: chars => {
+  beginEndWith: (chars, labelPrefix = '') => {
     const convertedPattern = convertToPattern(chars)
 
     return {
       name: ValidationConstants.BEGIN_END_WITH.NAME,
-      label: ValidationConstants.BEGIN_END_WITH.LABEL + ': ' + convertToLabel(chars),
+      label: labelPrefix + ValidationConstants.BEGIN_END_WITH.LABEL + ': ' + convertToLabel(chars),
       pattern: new RegExp('^([' + convertedPattern + '].*)?[' + convertedPattern + ']$')
     }
   },
@@ -170,10 +170,10 @@ const generateRule = {
       pattern: new RegExp('^([' + convertedPattern + '])?[^' + convertedPattern + ']+$')
     }
   },
-  validCharacters: chars => {
+  validCharacters: (chars, labelPrefix = '') => {
     return {
       name: ValidationConstants.VALID_CHARACTERS.NAME,
-      label: ValidationConstants.VALID_CHARACTERS.LABEL + ': ' + convertToLabel(chars),
+      label: labelPrefix + ValidationConstants.VALID_CHARACTERS.LABEL + ': ' + convertToLabel(chars),
       pattern: new RegExp('^[' + convertToPattern(chars) + ']+$')
     }
   },
@@ -234,7 +234,7 @@ const generateRule = {
       }
     }
   },
-  length: options => {
+  length: (options, labelPrefix = '') => {
     const min = Number.isSafeInteger(options.min) ? options.min : 0
     const max = Number.isSafeInteger(options.max) ? options.max : ''
 
@@ -246,7 +246,7 @@ const generateRule = {
 
       return {
         name: 'length',
-        label: label,
+        label: labelPrefix + label,
         pattern: new RegExp('^[\\S\\s]{' + min + ',' + max + '}$')
       }
     }
@@ -294,23 +294,15 @@ const commonRules = {
     }
   ],
   k8sLabels: {
-    value: [
-      {
-        name: 'valueBeginEnd',
-        label: `[Value] ${ValidationConstants.BEGIN_END_WITH.LABEL} : a–z, A–Z, 0–9`,
-        pattern: /^([^/]+\/)?([A-Za-z0-9][^/]*)?[A-Za-z0-9]$/
-      },
-      {
-        name: 'valueMaxLength',
-        label: '[Value] Max length - 63 characters',
-        pattern: /^([^/]+\/)?[^/]{1,63}$/
-      },
-      {
-        name: 'valueValidCharacters',
-        label: `[Value] ${ValidationConstants.VALID_CHARACTERS.LABEL}: a–z, A–Z, 0–9, –, _, .`,
-        pattern: /^[a-zA-Z0-9\-_.]+$/
-      }
-    ]
+    getValue: (withPrefix = false) => {
+      let labelPrefix = withPrefix ? '[Value] ': ''
+
+      return [
+        generateRule.beginEndWith('a-z A-Z 0-9', labelPrefix),
+        generateRule.length({ max: 63 }, labelPrefix),
+        generateRule.validCharacters('a-z A-Z 0-9 - _ .', labelPrefix)
+      ]
+    }
   }
   // email: [
   //   generateRule.beginEndNotWith('@ .'),
@@ -391,7 +383,7 @@ const validationRules = {
     ],
     labels: {
       key: commonRules.k8sLabels.key,
-      value: commonRules.k8sLabels.value
+      value: commonRules.k8sLabels.getValue(true)
     },
     params: {
       key: [generateRule.notContainCharacters('s')],
@@ -403,7 +395,7 @@ const validationRules = {
   },
   nodeSelectors: {
     key: commonRules.prefixedQualifiedName,
-    value: commonRules.k8sLabels.value
+    value: commonRules.k8sLabels.getValue(false)
   },
   environmentVariables: {
     secretName: [
