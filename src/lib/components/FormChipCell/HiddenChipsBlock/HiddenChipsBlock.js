@@ -55,7 +55,7 @@ const HiddenChipsBlock = React.forwardRef(
     })
 
     return createPortal(
-      <div ref={hiddenChipsPopUpRef} className={hiddenChipsBlockClassNames}>
+      <div ref={hiddenChipsPopUpRef} className={hiddenChipsBlockClassNames} onClick={event => event.stopPropagation()}>
         <div className="chip-block-hidden__scrollable-container">
           {chips?.map((element) => {
             return (

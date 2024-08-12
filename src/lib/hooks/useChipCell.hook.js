@@ -45,6 +45,8 @@ export const useChipCell = (isEditMode, visibleChipsMaxLength) => {
           setShowHiddenChips(true)
         }
       }
+
+      event && event.stopPropagation()
     },
     [isEditMode, visibleChipsMaxLength]
   )

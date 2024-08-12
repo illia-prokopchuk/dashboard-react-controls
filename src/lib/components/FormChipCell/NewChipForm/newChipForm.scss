@@ -58,6 +58,10 @@
       justify-content: center;
 
       &_hidden {
+        display: none;
+      }
+
+      &_invisible {
         visibility: hidden;
       }
 
