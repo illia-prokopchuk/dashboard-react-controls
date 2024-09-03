@@ -261,6 +261,12 @@ const generateRule = {
 }
 
 const commonRules = {
+  allowEmptyValue: [{
+    name: ValidationConstants.EMPTY_VALUE.NAME,
+    label: ValidationConstants.EMPTY_VALUE.LABEL,
+    isNote: true,
+    pattern: () => true
+  }],
   prefixedQualifiedName: [
     {
       name: 'nameValidCharacters',
@@ -294,14 +300,19 @@ const commonRules = {
     }
   ],
   k8sLabels: {
-    getValue: (withPrefix = false) => {
+    getValue: (withPrefix = false, allowEmptyValue = false) => {
       let labelPrefix = withPrefix ? '[Value] ': ''
-
-      return [
+      const validationRules = [
         generateRule.beginEndWith('a-z A-Z 0-9', labelPrefix),
         generateRule.length({ max: 63 }, labelPrefix),
         generateRule.validCharacters('a-z A-Z 0-9 - _ .', labelPrefix)
       ]
+
+      if (allowEmptyValue) {
+        validationRules.push(...commonRules.allowEmptyValue)
+      }
+
+      return validationRules
     }
   }
   // email: [
@@ -395,7 +406,7 @@ const validationRules = {
   },
   nodeSelectors: {
     key: commonRules.prefixedQualifiedName,
-    value: commonRules.k8sLabels.getValue(false)
+    value: commonRules.k8sLabels.getValue(false, true)
   },
   environmentVariables: {
     secretName: [

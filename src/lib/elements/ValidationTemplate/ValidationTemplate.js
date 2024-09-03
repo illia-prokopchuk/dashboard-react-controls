@@ -23,17 +23,21 @@ import { ReactComponent as Close } from '../../images/close.svg'
 
 import './ValidationTemplate.scss'
 
-const ValidationTemplate = ({ valid, validationMessage }) => {
+const ValidationTemplate = ({ valid, validationMessage, isNote = false }) => {
   const validationClasses = classnames('validation-option', valid && 'text-muted')
 
   return (
     <li className={validationClasses}>
       <i className="validation-option__icon">
-        {valid ? (
-          <Checkmark className="validation-option__icon_valid" />
-        ) : (
-          <Close className="validation-option__icon_invalid" />
-        )}
+        {
+          !isNote && (
+            valid ? (
+              <Checkmark className="validation-option__icon_valid"/>
+            ) : (
+              <Close className="validation-option__icon_invalid"/>
+            )
+          )
+        }
       </i>
       <span>{validationMessage}</span>
     </li>

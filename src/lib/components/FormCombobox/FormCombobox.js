@@ -164,8 +164,8 @@ const FormCombobox = ({
   }, [showSelectDropdown, showSuggestionList, showValidationRules])
 
   const getValidationRules = () => {
-    return validationRules.map(({ isValid = false, label, name }) => {
-      return <ValidationTemplate valid={isValid} validationMessage={label} key={name} />
+    return validationRules.map(({ isValid = false, label, name, isNote = false }) => {
+      return <ValidationTemplate valid={isValid} validationMessage={label} key={name} isNote={isNote} />
     })
   }
 

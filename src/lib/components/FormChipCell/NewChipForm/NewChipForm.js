@@ -328,8 +328,8 @@ const NewChipForm = React.forwardRef(
     }, [meta, showValidationRules, selectedInput, editConfig.chipIndex])
 
     const getValidationRules = useCallback(() => {
-      return validationRules[selectedInput]?.map(({ isValid = false, label, name }) => {
-        return <ValidationTemplate valid={isValid} validationMessage={label} key={name} />
+      return validationRules[selectedInput]?.map(({ isValid = false, label, name, isNote = false }) => {
+        return <ValidationTemplate valid={isValid} validationMessage={label} key={name} isNote={isNote} />
       })
     }, [selectedInput, validationRules])
 

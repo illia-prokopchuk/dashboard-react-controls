@@ -38,6 +38,7 @@ export const validation = {
   BEGIN_WITH: { LABEL: 'Must begin with', NAME: 'begin' },
   END_NOT_WITH: { LABEL: 'Must not end with', NAME: 'endNot' },
   END_WITH: { LABEL: 'Must end with', NAME: 'end' },
+  EMPTY_VALUE: { LABEL: 'Empty is allowed', NAME: 'emptyValue' },
   MUST_CONTAIN_EXACTLY_ONE: { LABEL: 'Must contain exactly one', NAME: 'exactlyOne' },
   MUST_HAVE_DOT_AFTER_AT: { LABEL: 'Must have at least one . after @', NAME: 'dotAfterAt' },
   MUST_NOT_BE: { LABEL: 'Must not be', NAME: 'mustNotBe' },

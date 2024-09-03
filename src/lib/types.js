@@ -128,7 +128,8 @@ export const INPUT_VALIDATION_RULES = PropTypes.arrayOf(
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     pattern: PropTypes.oneOfType([PropTypes.instanceOf(RegExp), PropTypes.func]).isRequired,
-    isValid: PropTypes.bool
+    isValid: PropTypes.bool,
+    isNote: PropTypes.bool
   })
 )
 
