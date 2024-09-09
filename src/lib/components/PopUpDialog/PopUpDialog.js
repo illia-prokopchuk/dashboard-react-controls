@@ -130,21 +130,23 @@ const PopUpDialog = React.forwardRef(
     }, [calculateCustomPopUpPosition])
 
     useEffect(() => {
-      const throttledCalculatedCustomPopUpPosition = throttle(calculateCustomPopUpPosition, 100, {
-        trailing: true,
-        leading: true
-      })
-      const popupObserver = new ResizeObserver(throttledCalculatedCustomPopUpPosition)
-      const popupElement = ref.current
+      if (showPopUp) {
+        const throttledCalculatedCustomPopUpPosition = throttle(calculateCustomPopUpPosition, 100, {
+          trailing: true,
+          leading: true
+        })
+        const popupObserver = new ResizeObserver(throttledCalculatedCustomPopUpPosition)
+        const popupElement = ref.current
 
-      popupObserver.observe(popupElement)
-      window.addEventListener('resize', throttledCalculatedCustomPopUpPosition)
+        popupObserver.observe(popupElement)
+        window.addEventListener('resize', throttledCalculatedCustomPopUpPosition)
 
-      return () => {
-        popupObserver.unobserve(popupElement)
-        window.removeEventListener('resize', throttledCalculatedCustomPopUpPosition)
+        return () => {
+          popupObserver.unobserve(popupElement)
+          window.removeEventListener('resize', throttledCalculatedCustomPopUpPosition)
+        }
       }
-    }, [calculateCustomPopUpPosition, ref])
+    }, [calculateCustomPopUpPosition, ref, showPopUp])
 
     return showPopUp
       ? createPortal(
