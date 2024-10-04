@@ -69,8 +69,12 @@ const NewChipForm = React.forwardRef(
       return ref.current?.clientWidth - 50
     }, [ref])
     const { background, borderColor, borderRadius, density, font } = chipOptions
-    const minWidthInput = 25
-    const minWidthValueInput = 35
+    const minWidthInput = useMemo(() => {
+      return isEditable ? 25 : 20
+    }, [isEditable])
+    const minWidthValueInput = useMemo(() => {
+      return isEditable ? 35 : 20
+    }, [isEditable])
 
     const refInputKey = React.useRef({})
     const refInputValue = React.useRef({})
@@ -136,6 +140,8 @@ const NewChipForm = React.forwardRef(
         }))
       }
     }, [
+      minWidthInput,
+      minWidthValueInput,
       chipData.key,
       chipData.value,
       chipData.keyFieldWidth,
