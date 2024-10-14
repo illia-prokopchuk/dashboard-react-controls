@@ -77,8 +77,12 @@ const NewChipForm = /*#__PURE__*/_react.default.forwardRef((_ref, ref) => {
     density,
     font
   } = chipOptions;
-  const minWidthInput = 25;
-  const minWidthValueInput = 35;
+  const minWidthInput = (0, _react.useMemo)(() => {
+    return isEditable ? 25 : 20;
+  }, [isEditable]);
+  const minWidthValueInput = (0, _react.useMemo)(() => {
+    return isEditable ? 35 : 20;
+  }, [isEditable]);
   const refInputKey = _react.default.useRef({});
   const refInputValue = _react.default.useRef({});
   const refInputContainer = _react.default.useRef();
@@ -98,7 +102,7 @@ const NewChipForm = /*#__PURE__*/_react.default.forwardRef((_ref, ref) => {
         valueFieldWidth
       }));
     }
-  }, [chipData.key, chipData.value, chipData.keyFieldWidth, chipData.valueFieldWidth, maxWidthInput, refInputKey, refInputValue]);
+  }, [minWidthInput, minWidthValueInput, chipData.key, chipData.value, chipData.keyFieldWidth, chipData.valueFieldWidth, maxWidthInput, refInputKey, refInputValue]);
   const handleScroll = () => {
     setShowValidationRules(false);
   };
