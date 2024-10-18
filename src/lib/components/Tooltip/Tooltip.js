@@ -73,12 +73,13 @@ const Tooltip = ({
             ? true
             : !child
               ? false
-              : child.nodeType !== Node.TEXT_NODE ||
-                /*
-            If the child node is a text node and the text of the child node inside the container is greater than the width of the container, then show tooltip.
-          */
-                (child.nodeType === Node.TEXT_NODE &&
-                  parentRef.current.scrollWidth > parentRef.current.offsetWidth))
+              : (child.nodeType !== Node.TEXT_NODE && child.childNodes?.[0]?.nodeType !== Node.TEXT_NODE) ||
+                  /*
+              If the child node or it's child node is a text node and the text of the child node inside the container
+              is greater than the width of the container, then show tooltip.
+            */
+                (child.nodeType === Node.TEXT_NODE || child.childNodes?.[0]?.nodeType === Node.TEXT_NODE) &&
+                  parentRef.current.scrollWidth > parentRef.current.offsetWidth)
 
         setShow(show)
 
