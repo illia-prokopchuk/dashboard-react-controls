@@ -48,6 +48,7 @@ const FormChipCell = ({
   label = null,
   name,
   onClick = () => {},
+  projectName,
   shortChips = false,
   validationRules = {},
   validator = null,
@@ -370,6 +371,7 @@ const FormChipCell = ({
           handleToEditMode={handleToEditMode}
           isEditable={isEditable}
           name={name}
+          projectName={projectName}
           ref={{ chipsCellRef, chipsWrapperRef, hiddenChipsCounterRef, hiddenChipsPopUpRef }}
           setChipsSizes={setChipsSizes}
           setEditConfig={setEditConfig}
@@ -394,6 +396,7 @@ FormChipCell.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func,
+  projectName: PropTypes.string.isRequired,
   shortChips: PropTypes.bool,
   validationRules: PropTypes.object,
   validator: PropTypes.func,

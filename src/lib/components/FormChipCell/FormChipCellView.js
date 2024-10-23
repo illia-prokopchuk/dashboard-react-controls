@@ -52,6 +52,7 @@ const FormChipCellView = React.forwardRef(
       handleToEditMode,
       isEditable = false,
       name,
+      projectName,
       setChipsSizes,
       setEditConfig,
       shortChips = false,
@@ -147,6 +148,7 @@ const FormChipCellView = React.forwardRef(
                               isEditable={isEditable}
                               keyName={`${contentItem}.key`}
                               meta={meta}
+                              projectName={projectName}
                               ref={chipsCellRef}
                               setChipsSizes={setChipsSizes}
                               setEditConfig={setEditConfig}
