@@ -43,6 +43,7 @@ const FormChip = React.forwardRef(
       isEditable = false,
       keyName = '',
       meta,
+      projectName,
       setChipsSizes,
       setEditConfig,
       validationRules = {},
@@ -76,6 +77,7 @@ const FormChip = React.forwardRef(
           keyName={keyName}
           meta={meta}
           onChange={handleEditChip}
+          projectName={projectName}
           ref={ref}
           setEditConfig={setEditConfig}
           validationRules={validationRules}

@@ -48,6 +48,7 @@ const NewChipForm = React.forwardRef(
       keyName,
       meta,
       onChange,
+      projectName,
       setEditConfig,
       validationRules: rules = defaultProps.rules,
       valueName
@@ -359,6 +360,7 @@ const NewChipForm = React.forwardRef(
           onChange={handleOnChange}
           onFocus={handleOnFocus}
           placeholder="key"
+          projectName={projectName}
           ref={refInputKey}
           style={{ width: chipData.keyFieldWidth }}
         />
@@ -375,6 +377,7 @@ const NewChipForm = React.forwardRef(
             onChange={handleOnChange}
             onFocus={handleOnFocus}
             placeholder="value"
+            projectName={projectName}
             ref={refInputValue}
             style={{ width: chipData.valueFieldWidth }}
           />
