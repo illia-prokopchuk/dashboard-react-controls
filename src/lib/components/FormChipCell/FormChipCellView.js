@@ -137,8 +137,8 @@ const FormChipCellView = React.forwardRef(
                               chipIndex={index}
                               chipOptions={chipOptions}
                               editConfig={editConfig}
-                              handleEditChip={(event, nameEvent) =>
-                                handleEditChip(event, fields, nameEvent)
+                              handleEditChip={(event, nameEvent, isOutsideClick) =>
+                                handleEditChip(event, fields, nameEvent, isOutsideClick)
                               }
                               handleRemoveChip={(event, index) =>
                                 handleRemoveChip(event, fields, index)

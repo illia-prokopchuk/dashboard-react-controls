@@ -139,7 +139,7 @@ const FormChipCell = ({
   )
 
   const handleRemoveChip = useCallback(
-    (event, fields, chipIndex) => {
+    (event, fields, chipIndex, isOutsideClick = false) => {
       checkChipsList(
         lodash
           .chain(formState)
@@ -149,19 +149,19 @@ const FormChipCell = ({
       )
       fields.remove(chipIndex)
       onExitEditModeCallback && onExitEditModeCallback()
-      event && event.stopPropagation()
+      event && !isOutsideClick && event.stopPropagation()
     },
     [checkChipsList, formState, name, onExitEditModeCallback]
   )
 
   const handleEditChip = useCallback(
-    (event, fields, nameEvent) => {
+    (event, fields, nameEvent, isOutsideClick) => {
       const { key, value } = fields.value[editConfig.chipIndex]
       const isChipNotEmpty = !!(key?.trim() && value?.trim())
 
       if (nameEvent === CLICK) {
         if (!isChipNotEmpty) {
-          handleRemoveChip(event, fields, editConfig.chipIndex)
+          handleRemoveChip(event, fields, editConfig.chipIndex, isOutsideClick)
         }
 
         setEditConfig({

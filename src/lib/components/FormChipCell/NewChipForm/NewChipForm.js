@@ -187,7 +187,7 @@ const NewChipForm = React.forwardRef(
           const elementPath = event.path ?? event.composedPath?.()
 
           if (!elementPath.includes(refInputContainer.current)) {
-            onChange(event, CLICK)
+            onChange(event, CLICK, true)
             window.getSelection().removeAllRanges()
           } else {
             event.stopPropagation()
@@ -297,7 +297,7 @@ const NewChipForm = React.forwardRef(
           }))
         }
       },
-      [maxWidthInput, refInputKey, refInputValue, keyName]
+      [keyName, minWidthInput, maxWidthInput, minWidthValueInput]
     )
 
     useLayoutEffect(() => {
