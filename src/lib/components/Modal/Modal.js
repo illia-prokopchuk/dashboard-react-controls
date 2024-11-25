@@ -33,6 +33,7 @@ const Modal = ({
   actions = [],
   children,
   className,
+  noHeader = false,
   onClose,
   previewText = '',
   size = MODAL_MD,
@@ -53,11 +54,13 @@ const Modal = ({
             </RoundedIcon>
           </div>
           <div className="modal__content">
-            <div className="modal__header">
-              {previewText && <div className="modal__header-preview-text">{previewText}</div>}
-              <h5 className="modal__header-title">{title}</h5>
-              {subTitle && <h6 className="modal__header-sub-title">{subTitle}</h6>}
-            </div>
+            {!noHeader && (
+              <div className="modal__header">
+                {previewText && <div className="modal__header-preview-text">{previewText}</div>}
+                <h5 className="modal__header-title">{title}</h5>
+                {subTitle && <h6 className="modal__header-sub-title">{subTitle}</h6>}
+              </div>
+            )}
             <div className="modal__body">{children}</div>
             {actions && actions.length > 0 && (
               <div className="modal__footer">
