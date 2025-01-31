@@ -86,11 +86,7 @@ const FormChipCellView = React.forwardRef(
     )
 
     return (
-      <FieldArray
-        name={name}
-        initialValue={formState.initialValues[name]}
-        validate={validateFields}
-      >
+      <FieldArray name={name} validate={validateFields}>
         {({ fields, meta }) => {
           if (
             !isEmpty(validationRules) &&

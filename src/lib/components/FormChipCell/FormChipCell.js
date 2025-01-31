@@ -14,7 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import lodash, { get, isEmpty, set, isNil } from 'lodash'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
@@ -75,6 +75,10 @@ const FormChipCell = ({
     isValueFocused: false,
     isNewChip: false
   })
+
+  useEffect(() => {
+    formState.form.change('labelsAreInEditMode', editConfig.isEdit)
+  }, [editConfig.isEdit, formState.form])
 
   let chips = useMemo(() => {
     return isEditable || visibleChipsMaxLength === 'all'
