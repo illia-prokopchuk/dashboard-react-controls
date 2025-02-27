@@ -14,7 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { CSSTransition } from 'react-transition-group'
 
@@ -23,10 +23,19 @@ import { PopUpDialog } from '../../components'
 import './optionsMenu.scss'
 
 const OptionsMenu = React.forwardRef(({ children = [], show = false, timeout = 300 }, ref) => {
+  const nodeRef = useRef(null)
   const { width: dropdownWidth } = ref.current ? ref.current.getBoundingClientRect() : {}
+
   return (
-    <CSSTransition in={show} timeout={timeout} classNames="options-menu-transition" unmountOnExit>
+    <CSSTransition
+      nodeRef={nodeRef}
+      in={show}
+      timeout={timeout}
+      classNames="options-menu-transition"
+      unmountOnExit
+    >
       <PopUpDialog
+        ref={nodeRef}
         headerIsHidden
         className="options-menu"
         customPosition={{

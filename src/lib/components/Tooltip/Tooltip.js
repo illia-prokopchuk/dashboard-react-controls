@@ -76,8 +76,8 @@ const Tooltip = ({
               : (child.nodeType !== Node.TEXT_NODE &&
                   child.childNodes?.[0]?.nodeType !== Node.TEXT_NODE) ||
                 /*
-            If the child node is a text node and the text of the child node inside the container is greater than the width of the container, then show tooltip.
-          */
+                                    If the child node is a text node and the text of the child node inside the container is greater than the width of the container, then show tooltip.
+                                  */
                 ((child.nodeType === Node.TEXT_NODE ||
                   child.childNodes?.[0]?.nodeType === Node.TEXT_NODE) &&
                   parentRef.current.scrollWidth > parentRef.current.offsetWidth))
@@ -191,11 +191,11 @@ const Tooltip = ({
       {!hidden &&
         createPortal(
           <CSSTransition
+            nodeRef={tooltipRef}
             classNames="fade"
             in={show}
             timeout={duration}
             unmountOnExit
-            nodeRef={tooltipRef}
           >
             <div
               data-testid={id ? `${id}-tooltip` : 'tooltip'}

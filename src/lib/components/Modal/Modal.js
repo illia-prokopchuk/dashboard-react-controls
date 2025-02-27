@@ -14,7 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { CSSTransition } from 'react-transition-group'
 import classNames from 'classnames'
@@ -41,13 +41,20 @@ const Modal = ({
   subTitle = null,
   title = ''
 }) => {
+  const nodeRef = useRef(null)
   const modalClassNames = classNames('modal', className, size && `modal-${size}`)
 
   return (
     <>
       <Backdrop onClose={onClose} show={show} />
-      <CSSTransition in={show} timeout={300} classNames="modal-transition" unmountOnExit>
-        <div className={modalClassNames} data-testid="modal">
+      <CSSTransition
+        nodeRef={nodeRef}
+        in={show}
+        timeout={300}
+        classNames="modal-transition"
+        unmountOnExit
+      >
+        <div className={modalClassNames} data-testid="modal" ref={nodeRef}>
           <div className="modal__header-button">
             <RoundedIcon data-testid="pop-up-close-btn" onClick={onClose} tooltipText="Close">
               <CloseIcon />
