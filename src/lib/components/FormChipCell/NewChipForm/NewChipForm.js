@@ -79,6 +79,7 @@ const NewChipForm = React.forwardRef(
     const refInputKey = React.useRef({})
     const refInputValue = React.useRef({})
     const refInputContainer = React.useRef()
+    const validationRulesRef = React.useRef()
 
     const labelKeyClassName = classnames(
       className,
@@ -151,19 +152,6 @@ const NewChipForm = React.forwardRef(
       refInputValue
     ])
 
-    const handleScroll = () => {
-      setShowValidationRules(false)
-    }
-
-    useEffect(() => {
-      if (showValidationRules) {
-        window.addEventListener('scroll', handleScroll, true)
-      }
-      return () => {
-        window.removeEventListener('scroll', handleScroll, true)
-      }
-    }, [showValidationRules])
-
     useEffect(() => {
       if (editConfig.chipIndex === chipIndex) {
         if (editConfig.isKeyFocused) {
@@ -182,13 +170,14 @@ const NewChipForm = React.forwardRef(
     ])
 
     const outsideClick = useCallback(
-      event => {
+      (event, forceOutsideClick = false) => {
         if (editConfig.chipIndex === chipIndex) {
           const elementPath = event.path ?? event.composedPath?.()
 
-          if (!elementPath.includes(refInputContainer.current)) {
+          if (!elementPath.includes(refInputContainer.current) || forceOutsideClick) {
             onChange(event, CLICK, true)
             window.getSelection().removeAllRanges()
+            document.activeElement.blur()
           } else {
             event.stopPropagation()
           }
@@ -196,6 +185,25 @@ const NewChipForm = React.forwardRef(
       },
       [onChange, refInputContainer, chipIndex, editConfig.chipIndex]
     )
+
+    const handleScroll = useCallback(
+      event => {
+        if (validationRulesRef?.current && !validationRulesRef.current.contains(event.target)) {
+          setShowValidationRules(false)
+          outsideClick(event, true)
+        }
+      },
+      [outsideClick]
+    )
+
+    useEffect(() => {
+      if (showValidationRules) {
+        window.addEventListener('scroll', handleScroll, true)
+      }
+      return () => {
+        window.removeEventListener('scroll', handleScroll, true)
+      }
+    }, [handleScroll, showValidationRules])
 
     useEffect(() => {
       if (editConfig.isEdit) {
@@ -392,7 +400,7 @@ const NewChipForm = React.forwardRef(
           (editConfig.isKeyFocused ? !isEmpty(chipData.key) : !isEmpty(chipData.value)) &&
           editConfig.chipIndex === chipIndex &&
           !isEmpty(get(meta, ['error', editConfig.chipIndex, selectedInput], [])) && (
-            <OptionsMenu show={showValidationRules} ref={refInputContainer}>
+            <OptionsMenu show={showValidationRules} ref={{ refInputContainer, validationRulesRef }}>
               {getValidationRules()}
             </OptionsMenu>
           )}

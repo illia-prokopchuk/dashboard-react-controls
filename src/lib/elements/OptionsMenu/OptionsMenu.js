@@ -22,26 +22,31 @@ import { PopUpDialog } from '../../components'
 
 import './optionsMenu.scss'
 
-const OptionsMenu = React.forwardRef(({ children = [], show = false, timeout = 300 }, ref) => {
-  const { width: dropdownWidth } = ref.current ? ref.current.getBoundingClientRect() : {}
-  return (
-    <CSSTransition in={show} timeout={timeout} classNames="options-menu-transition" unmountOnExit>
-      <PopUpDialog
-        headerIsHidden
-        className="options-menu"
-        customPosition={{
-          element: ref,
-          position: 'bottom-right',
-          autoVerticalPosition: true,
-          autoHorizontalPosition: true
-        }}
-        style={{ minWidth: `${dropdownWidth}px` }}
-      >
-        <ul className="options-menu__body">{children}</ul>
-      </PopUpDialog>
-    </CSSTransition>
-  )
-})
+const OptionsMenu = React.forwardRef(
+  ({ children = [], show = false, timeout = 300 }, { refInputContainer, validationRulesRef }) => {
+    const { width: dropdownWidth } = refInputContainer?.current
+      ? refInputContainer.current.getBoundingClientRect()
+      : {}
+    return (
+      <CSSTransition in={show} timeout={timeout} classNames="options-menu-transition" unmountOnExit>
+        <PopUpDialog
+          ref={validationRulesRef}
+          headerIsHidden
+          className="options-menu"
+          customPosition={{
+            element: refInputContainer,
+            position: 'bottom-right',
+            autoVerticalPosition: true,
+            autoHorizontalPosition: true
+          }}
+          style={{ minWidth: `${dropdownWidth}px` }}
+        >
+          <ul className="options-menu__body">{children}</ul>
+        </PopUpDialog>
+      </CSSTransition>
+    )
+  }
+)
 
 OptionsMenu.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element),
