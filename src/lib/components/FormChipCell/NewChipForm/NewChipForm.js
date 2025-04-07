@@ -17,7 +17,7 @@ such restriction.
 import React, { useState, useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { isEmpty, get, isNil } from 'lodash'
+import { isEmpty, get, isNil, throttle } from 'lodash'
 
 import NewChipInput from '../NewChipInput/NewChipInput'
 import OptionsMenu from '../../../elements/OptionsMenu/OptionsMenu'
@@ -26,6 +26,7 @@ import ValidationTemplate from '../../../elements/ValidationTemplate/ValidationT
 import { CHIP_OPTIONS } from '../../../types'
 import { CLICK, TAB, TAB_SHIFT } from '../../../constants'
 import { getTextWidth } from '../formChipCell.util'
+import { getTransitionEndEventName } from '../../../utils/common.util'
 
 import { ReactComponent as Close } from '../../../images/close.svg'
 
@@ -65,9 +66,6 @@ const NewChipForm = React.forwardRef(
     const [validationRules, setValidationRules] = useState(rules)
     const [showValidationRules, setShowValidationRules] = useState(false)
 
-    const maxWidthInput = useMemo(() => {
-      return ref.current?.clientWidth - 50
-    }, [ref])
     const { background, borderColor, borderRadius, density, font } = chipOptions
     const minWidthInput = useMemo(() => {
       return isEditable ? 25 : 20
@@ -75,6 +73,7 @@ const NewChipForm = React.forwardRef(
     const minWidthValueInput = useMemo(() => {
       return isEditable ? 35 : 20
     }, [isEditable])
+    const transitionEndEventName = useMemo(() => getTransitionEndEventName(), [])
 
     const refInputKey = React.useRef({})
     const refInputValue = React.useRef({})
@@ -115,23 +114,48 @@ const NewChipForm = React.forwardRef(
       !isEditable && 'item-icon-close_hidden'
     )
 
-    useLayoutEffect(() => {
-      if (!chipData.keyFieldWidth && !chipData.valueFieldWidth) {
-        const currentWidthKeyInput = refInputKey.current.scrollWidth + 1
-        const currentWidthValueInput = refInputValue.current.scrollWidth + 1
+    const resizeChip = useCallback(() => {
+      if (refInputKey.current) {
+        const currentWidthKeyInput = getTextWidth(refInputKey.current) + 1
+        const currentWidthValueInput = getTextWidth(refInputValue.current) + 1
+        const maxWidthInput = ref.current?.clientWidth - 50
+        const keyEllipsis = currentWidthKeyInput >= maxWidthInput / 2
+        const valueEllipsis = currentWidthValueInput >= maxWidthInput / 2
+        let keyFieldWidth = null
+        let valueFieldWidth = null
 
-        const keyFieldWidth =
-          !chipData.key || currentWidthKeyInput <= minWidthInput
-            ? minWidthInput
-            : currentWidthKeyInput >= maxWidthInput
-              ? maxWidthInput
+        if (keyEllipsis && valueEllipsis) {
+          keyFieldWidth = valueFieldWidth = maxWidthInput / 2
+        } else if (keyEllipsis) {
+          valueFieldWidth = !chipData.value ? minWidthValueInput : currentWidthValueInput
+
+          const remainingPlace = maxWidthInput - valueFieldWidth
+
+          keyFieldWidth =
+            remainingPlace > currentWidthKeyInput ? currentWidthKeyInput : remainingPlace
+        } else if (valueEllipsis) {
+          keyFieldWidth = !chipData.key ? minWidthInput : currentWidthKeyInput
+
+          const remainingPlace = maxWidthInput - keyFieldWidth
+
+          valueFieldWidth =
+            remainingPlace > currentWidthValueInput ? currentWidthValueInput : remainingPlace
+        } else {
+          keyFieldWidth =
+            !chipData.key || currentWidthKeyInput <= minWidthInput
+              ? minWidthInput
               : currentWidthKeyInput
-        const valueFieldWidth =
-          !chipData.value || currentWidthValueInput <= minWidthValueInput
-            ? minWidthValueInput
-            : currentWidthValueInput >= maxWidthInput
-              ? maxWidthInput
+          valueFieldWidth =
+            !chipData.value || currentWidthValueInput <= minWidthValueInput
+              ? minWidthValueInput
               : currentWidthValueInput
+        }
+
+        refInputKey.current.style.width = `${keyFieldWidth}px`
+
+        if (!isEmpty(refInputValue.current)) {
+          refInputValue.current.style.width = `${valueFieldWidth}px`
+        }
 
         setChipData(prevState => ({
           ...prevState,
@@ -139,21 +163,31 @@ const NewChipForm = React.forwardRef(
           valueFieldWidth
         }))
       }
-    }, [
-      minWidthInput,
-      minWidthValueInput,
-      chipData.key,
-      chipData.value,
-      chipData.keyFieldWidth,
-      chipData.valueFieldWidth,
-      maxWidthInput,
-      refInputKey,
-      refInputValue
-    ])
+    }, [chipData.key, chipData.value, minWidthInput, minWidthValueInput, ref])
 
     const handleScroll = () => {
       setShowValidationRules(false)
     }
+
+    useEffect(() => {
+      const resizeChipDebounced = throttle(resizeChip, 500)
+
+      if (isEditable) {
+        window.addEventListener('resize', resizeChipDebounced)
+        window.addEventListener(transitionEndEventName, resizeChipDebounced)
+
+        return () => {
+          window.removeEventListener('resize', resizeChipDebounced)
+          window.removeEventListener(transitionEndEventName, resizeChipDebounced)
+        }
+      }
+    }, [isEditable, resizeChip, transitionEndEventName])
+
+    useEffect(() => {
+      if (!chipData.keyFieldWidth && !chipData.valueFieldWidth) {
+        resizeChip()
+      }
+    }, [chipData.keyFieldWidth, chipData.valueFieldWidth, resizeChip])
 
     useEffect(() => {
       if (showValidationRules) {
@@ -264,7 +298,10 @@ const NewChipForm = React.forwardRef(
 
     const handleOnChange = useCallback(
       event => {
+        const maxWidthInput = ref.current?.clientWidth - 50
+
         event.preventDefault()
+
         if (event.target.name === keyName) {
           const currentWidthKeyInput = getTextWidth(refInputKey.current)
 
@@ -297,7 +334,7 @@ const NewChipForm = React.forwardRef(
           }))
         }
       },
-      [keyName, minWidthInput, maxWidthInput, minWidthValueInput]
+      [keyName, minWidthInput, ref, minWidthValueInput]
     )
 
     useLayoutEffect(() => {
