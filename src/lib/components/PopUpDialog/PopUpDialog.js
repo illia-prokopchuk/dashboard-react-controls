@@ -123,6 +123,8 @@ const PopUpDialog = React.forwardRef(
           ref.current.style.left = `${leftPosition}px`
         }
       }
+
+      return ref
     }, [customPosition, style.left, ref])
 
     useLayoutEffect(() => {

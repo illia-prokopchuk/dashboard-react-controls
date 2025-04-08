@@ -1,6 +1,6 @@
 
 
-Create a new dist version 2.2.21
+Create a new dist version 2.2.23
 
 Collecting:
-- Fix [Wizard] Steps in small resolution (#373)
+- Impl [Details] Move Redux to RTK (#380)

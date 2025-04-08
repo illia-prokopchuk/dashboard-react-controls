@@ -88,11 +88,16 @@ const FormChipCellView = React.forwardRef(
     return (
       <FieldArray name={name} validate={validateFields}>
         {({ fields, meta }) => {
+          let newValidationRules = { ...validationRules }
+
           if (
             !isEmpty(validationRules) &&
             validationRules.key.every(rule => rule.name !== uniquenessError.name)
           ) {
-            validationRules.key.push(uniquenessError)
+            newValidationRules = {
+              ...validationRules,
+              key: [...validationRules.key, uniquenessError]
+            }
           }
 
           return (
@@ -148,7 +153,7 @@ const FormChipCellView = React.forwardRef(
                               ref={chipsCellRef}
                               setChipsSizes={setChipsSizes}
                               setEditConfig={setEditConfig}
-                              validationRules={validationRules}
+                              validationRules={newValidationRules}
                               valueName={`${contentItem}.value`}
                             />
                           </Tooltip>

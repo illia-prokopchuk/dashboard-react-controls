@@ -101,7 +101,13 @@ const Tip = ({ className = '', text, withExclamationMark }) => {
         )}
       </div>
       {createPortal(
-        <CSSTransition in={isShow} timeout={200} classNames="fade" unmountOnExit>
+        <CSSTransition
+          nodeRef={tipBodyRef}
+          in={isShow}
+          timeout={200}
+          classNames="fade"
+          unmountOnExit
+        >
           <div ref={tipBodyRef} data-testid="tip-text" className={tipClassNames}>
             {text}
           </div>

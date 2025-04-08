@@ -14,22 +14,25 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { CSSTransition } from 'react-transition-group'
 
 import './Backdrop.scss'
 
 const Backdrop = ({ duration = 300, show = false, onClose }) => {
+  const nodeRef = useRef(null)
+
   return (
     <CSSTransition
+      nodeRef={nodeRef}
       in={show}
       timeout={duration}
       classNames="backdrop-transition"
       mountOnEnter
       unmountOnExit
     >
-      <div className="backdrop" onClick={onClose}></div>
+      <div className="backdrop" onClick={onClose} ref={nodeRef}></div>
     </CSSTransition>
   )
 }

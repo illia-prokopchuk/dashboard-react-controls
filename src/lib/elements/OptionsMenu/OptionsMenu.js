@@ -27,8 +27,15 @@ const OptionsMenu = React.forwardRef(
     const { width: dropdownWidth } = refInputContainer?.current
       ? refInputContainer.current.getBoundingClientRect()
       : {}
+
     return (
-      <CSSTransition in={show} timeout={timeout} classNames="options-menu-transition" unmountOnExit>
+      <CSSTransition
+        in={show}
+        timeout={timeout}
+        classNames="options-menu-transition"
+        unmountOnExit
+        ref={validationRulesRef}
+      >
         <PopUpDialog
           ref={validationRulesRef}
           headerIsHidden
