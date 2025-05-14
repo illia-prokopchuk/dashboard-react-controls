@@ -55,6 +55,7 @@ let NewChipForm = (
     keyName,
     meta,
     onChange,
+    setChipSizeIsRecalculated,
     setEditConfig,
     validationRules: rules = defaultProps.rules,
     valueName
@@ -169,8 +170,16 @@ let NewChipForm = (
         keyFieldWidth,
         valueFieldWidth
       }))
+      setChipSizeIsRecalculated(true)
     }
-  }, [chipData.key, chipData.value, minWidthInput, minWidthValueInput, ref])
+  }, [
+    chipData.key,
+    chipData.value,
+    minWidthInput,
+    minWidthValueInput,
+    ref,
+    setChipSizeIsRecalculated
+  ])
 
   useEffect(() => {
     const resizeChipDebounced = throttle(resizeChip, 500)
@@ -226,7 +235,7 @@ let NewChipForm = (
     return () => {
       window.removeEventListener('scroll', handleScroll, true)
     }
-  }, [showValidationRules, handleScroll])
+  }, [handleScroll, showValidationRules])
 
   useEffect(() => {
     if (editConfig.chipIndex === chipIndex) {
@@ -473,6 +482,7 @@ NewChipForm.propTypes = {
   keyName: PropTypes.string.isRequired,
   meta: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
+  setChipSizeIsRecalculated: PropTypes.func.isRequired,
   setEditConfig: PropTypes.func.isRequired,
   validationRules: PropTypes.object,
   valueName: PropTypes.string.isRequired

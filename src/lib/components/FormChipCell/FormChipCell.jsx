@@ -55,6 +55,7 @@ let FormChipCell = ({
   visibleChipsMaxLength = null
 }) => {
   const chipsClassName = classnames('chips', className)
+  const [chipSizeIsRecalculated, setChipSizeIsRecalculated] = useState(false)
   const {
     chipsCellRef,
     chipsWrapperRef,
@@ -360,8 +361,10 @@ let FormChipCell = ({
       <div className={label ? 'chips__wrapper' : ''}>
         <FormChipCellView
           chipOptions={chipOptions}
+          chipSizeIsRecalculated={chipSizeIsRecalculated}
           chips={chips}
           editConfig={editConfig}
+          formState={formState}
           handleAddNewChip={handleAddNewChip}
           handleEditChip={handleEditChip}
           handleRemoveChip={handleRemoveChip}
@@ -370,6 +373,7 @@ let FormChipCell = ({
           isEditable={isEditable}
           name={name}
           ref={{ chipsCellRef, chipsWrapperRef, hiddenChipsCounterRef, hiddenChipsPopUpRef }}
+          setChipSizeIsRecalculated={setChipSizeIsRecalculated}
           setChipsSizes={setChipsSizes}
           setEditConfig={setEditConfig}
           shortChips={shortChips}

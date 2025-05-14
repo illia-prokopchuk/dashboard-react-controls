@@ -41,6 +41,8 @@ let FormChipCellView = (
       density: 'dense',
       font: 'purple'
     },
+    chipSizeIsRecalculated,
+    setChipSizeIsRecalculated,
     chips,
     editConfig,
     handleAddNewChip,
@@ -67,7 +69,11 @@ let FormChipCellView = (
     chipOptions.font && `button-add-font_${chipOptions.font}`,
     chipOptions.density && `button-add-density_${chipOptions.density}`
   )
-  const wrapperClassNames = classnames('chips-wrapper', isEditable && 'fixed-max-width')
+  const wrapperClassNames = classnames(
+    'chips-wrapper',
+    isEditable && 'fixed-max-width',
+    !chipSizeIsRecalculated && 'chip_invisible'
+  )
   const chipClassNames = classnames(
     'chip',
     'chip__content',
@@ -133,6 +139,8 @@ let FormChipCellView = (
                         >
                           <FormChip
                             chip={chipData}
+                            chipSizeIsRecalculated={chipSizeIsRecalculated}
+                            setChipSizeIsRecalculated={setChipSizeIsRecalculated}
                             chipIndex={index}
                             chipOptions={chipOptions}
                             editConfig={editConfig}
@@ -204,8 +212,11 @@ FormChipCellView.displayName = 'FormChipCellView'
 
 FormChipCellView.propTypes = {
   chipOptions: CHIP_OPTIONS,
+  chipSizeIsRecalculated: PropTypes.bool.isRequired,
+  setChipSizeIsRecalculated: PropTypes.func.isRequired,
   chips: PropTypes.object.isRequired,
   editConfig: PropTypes.object.isRequired,
+  formState: PropTypes.object.isRequired,
   handleAddNewChip: PropTypes.func.isRequired,
   handleEditChip: PropTypes.func.isRequired,
   handleRemoveChip: PropTypes.func.isRequired,

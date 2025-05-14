@@ -13,6 +13,11 @@
     visibility: visible;
   }
 
+  &_invisible {
+    visibility: hidden;
+    height: 30px;
+  }
+
   &__content {
     display: flex;
     align-items: center;

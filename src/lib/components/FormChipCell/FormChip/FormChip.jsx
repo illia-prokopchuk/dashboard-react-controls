@@ -27,6 +27,8 @@ let FormChip = (
   {
     chip,
     chipIndex,
+    chipSizeIsRecalculated,
+    setChipSizeIsRecalculated,
     chipOptions = {
       background: 'purple',
       boldValue: false,
@@ -50,15 +52,14 @@ let FormChip = (
   ref
 ) => {
   const chipRef = React.useRef()
-
   useLayoutEffect(() => {
-    if (chipRef.current && setChipsSizes) {
+    if (chipRef.current && setChipsSizes && chipSizeIsRecalculated) {
       setChipsSizes(state => ({
         ...state,
         [chipIndex]: chipRef.current.getBoundingClientRect().width
       }))
     }
-  }, [chipIndex, setChipsSizes])
+  }, [chipIndex, chipSizeIsRecalculated, setChipsSizes])
 
   return (
     <div onClick={event => handleToEditMode(event, chipIndex, keyName)} ref={chipRef}>
@@ -74,6 +75,7 @@ let FormChip = (
         meta={meta}
         onChange={handleEditChip}
         ref={ref}
+        setChipSizeIsRecalculated={setChipSizeIsRecalculated}
         setEditConfig={setEditConfig}
         validationRules={validationRules}
         valueName={valueName}
@@ -88,6 +90,8 @@ FormChip.displayName = 'FormChip'
 
 FormChip.propTypes = {
   chip: PropTypes.object.isRequired,
+  chipSizeIsRecalculated: PropTypes.bool.isRequired,
+  setChipSizeIsRecalculated: PropTypes.func.isRequired,
   chipIndex: PropTypes.number.isRequired,
   chipOptions: CHIP_OPTIONS,
   editConfig: PropTypes.object.isRequired,
