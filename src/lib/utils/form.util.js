@@ -14,7 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
-import { isEqual, set } from 'lodash'
+import { get, isEmpty, isEqual, isNil, mapValues, set, some } from 'lodash'
 
 export const setFieldState = (args, state) => {
   let fieldName = args[0]
@@ -37,7 +37,10 @@ export const areFormValuesChanged = (initialValues, values) => {
     return value
   }
 
-  return !isEqual(JSON.stringify(initialValues, replacer), JSON.stringify(values, replacer))
+  return !isEqual(
+    JSON.stringify(clearObjectFromEmptyArrayElements(initialValues), replacer),
+    JSON.stringify(clearObjectFromEmptyArrayElements(values), replacer)
+  )
 }
 
 export const generateObjectFromKeyValue = (keyValueList = []) => {
@@ -61,4 +64,14 @@ export const parseObjectToKeyValue = (object = {}) => {
 
 export const isSubmitDisabled = formState => {
   return formState.submitting || (formState.invalid && formState.submitFailed)
+}
+
+const clearObjectFromEmptyArrayElements = (obj = {}) => {
+  return mapValues(obj, objValue => {
+    if (!Array.isArray(objValue)) return objValue
+
+    return objValue.filter(arrayElement => {
+      return some(get(arrayElement, 'data', arrayElement), val => !isNil(val) && !isEmpty(val))
+    })
+  })
 }

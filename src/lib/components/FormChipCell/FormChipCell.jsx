@@ -148,7 +148,13 @@ let FormChipCell = ({
           .filter((_, index) => index !== chipIndex)
           .value()
       )
-      fields.remove(chipIndex)
+
+      if (fields.length === 1) {
+        formState.form.change(name, [])
+      } else {
+        fields.remove(chipIndex)
+      }
+
       onExitEditModeCallback && onExitEditModeCallback()
       event && !isOutsideClick && event.stopPropagation()
     },
