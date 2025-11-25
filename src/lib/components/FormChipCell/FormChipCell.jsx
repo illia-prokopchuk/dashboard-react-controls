@@ -41,9 +41,11 @@ let FormChipCell = ({
     font: 'purple'
   },
   className = '',
+  children,
   delimiter = null,
   formState,
   initialValues,
+  isDeletable = false,
   isEditable = false,
   label = null,
   name,
@@ -377,6 +379,7 @@ let FormChipCell = ({
           handleRemoveChip={handleRemoveChip}
           handleShowElements={handleShowElements}
           handleToEditMode={handleToEditMode}
+          isDeletable={isDeletable}
           isEditable={isEditable}
           name={name}
           ref={{ chipsCellRef, chipsWrapperRef, hiddenChipsCounterRef, hiddenChipsPopUpRef }}
@@ -389,7 +392,9 @@ let FormChipCell = ({
           validateFields={validateFields}
           validationRules={validationRules}
           visibleChipsMaxLength={visibleChipsMaxLength}
-        />
+        >
+          {children}
+        </FormChipCellView>
       </div>
     </div>
   )
@@ -397,10 +402,12 @@ let FormChipCell = ({
 
 FormChipCell.propTypes = {
   chipOptions: CHIP_OPTIONS,
+  children: PropTypes.node,
   className: PropTypes.string,
   delimiter: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   formState: PropTypes.object.isRequired,
   initialValues: PropTypes.object.isRequired,
+  isDeletable: PropTypes.bool,
   isEditable: PropTypes.bool,
   label: PropTypes.string,
   name: PropTypes.string.isRequired,

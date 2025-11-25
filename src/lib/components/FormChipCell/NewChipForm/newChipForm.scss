@@ -51,16 +51,16 @@
       @include mixins.chipsFont(EditableChip);
     }
 
-    .item-icon-close {
+    button.item-icon-close {
       display: flex;
       align-items: center;
       justify-content: center;
 
-      &_hidden {
+      &.hidden {
         display: none;
       }
 
-      &_invisible {
+      &.invisible {
         visibility: hidden;
       }
 

@@ -21,11 +21,11 @@ import React, { cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-import ChipCell from '../ChipCell/ChipCell'
+import Tooltip from '../Tooltip/Tooltip'
+import ReadOnlyChips from '../ReadOnlyChips/ReadOnlyChips'
 import TableLinkCell from '../../elements/TableLinkCell/TableLinkCell'
 import TableTypeCell from '../../elements/TableTypeCell/TableTypeCell'
 import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
-import Tooltip from '../Tooltip/Tooltip'
 
 import { getChipOptions } from '../../utils/chips.util'
 import { truncateUid } from '../../utils/string.util'
@@ -118,7 +118,11 @@ const TableCell = ({
   } else if (Array.isArray(cellData.value)) {
     return (
       <td data-testid={cellData.headerId} className={cellClassNames}>
-        <ChipCell chipOptions={getChipOptions(cellData.type)} elements={cellData.value} tooltip />
+        <ReadOnlyChips
+          chipOptions={getChipOptions(cellData.type)}
+          labels={cellData.value}
+          shortChips
+        />
       </td>
     )
   } else if (cellData.type === 'hash') {

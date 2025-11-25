@@ -43,6 +43,7 @@ let FormChipCellView = (
     },
     chipSizeIsRecalculated,
     setChipSizeIsRecalculated,
+    children,
     chips,
     editConfig,
     handleAddNewChip,
@@ -50,6 +51,7 @@ let FormChipCellView = (
     handleRemoveChip,
     handleShowElements,
     handleToEditMode,
+    isDeletable = false,
     isEditable = false,
     name,
     setChipsSizes,
@@ -153,6 +155,7 @@ let FormChipCellView = (
                               handleRemoveChip(event, fields, index)
                             }
                             handleToEditMode={handleToEditMode}
+                            isDeletable={isDeletable}
                             isEditable={isEditable}
                             keyName={`${contentItem}.key`}
                             meta={meta}
@@ -199,6 +202,7 @@ let FormChipCellView = (
                     <Add />
                   </button>
                 )}
+                {children}
               </div>
             </div>
           )
@@ -216,6 +220,7 @@ FormChipCellView.propTypes = {
   chipOptions: CHIP_OPTIONS,
   chipSizeIsRecalculated: PropTypes.bool.isRequired,
   setChipSizeIsRecalculated: PropTypes.func.isRequired,
+  children: PropTypes.node,
   chips: PropTypes.object.isRequired,
   editConfig: PropTypes.object.isRequired,
   formState: PropTypes.object.isRequired,
@@ -224,6 +229,7 @@ FormChipCellView.propTypes = {
   handleRemoveChip: PropTypes.func.isRequired,
   handleShowElements: PropTypes.func.isRequired,
   handleToEditMode: PropTypes.func.isRequired,
+  isDeletable: PropTypes.bool,
   isEditable: PropTypes.bool,
   name: PropTypes.string.isRequired,
   setChipsSizes: PropTypes.func.isRequired,

@@ -18,8 +18,6 @@ such restriction.
 import ActionsMenu from './ActionsMenu/ActionsMenu'
 import BlockerSpy from './BlockerSpy/BlockerSpy'
 import Button from './Button/Button'
-import Chip from './Chip/Chip'
-import ChipCell from './ChipCell/ChipCell'
 import ConfirmDialog from './ConfirmDialog/ConfirmDialog'
 import CopyToClipboard from './CopyToClipboard/CopyToClipboard'
 import ErrorMessage from './ErrorMessage/ErrorMessage'
@@ -38,6 +36,7 @@ import Loader from './Loader/Loader'
 import LoaderForSuspenseFallback from './Loader/LoaderForSuspenseFallback'
 import Modal from './Modal/Modal'
 import PopUpDialog from './PopUpDialog/PopUpDialog'
+import ReadOnlyChips from './ReadOnlyChips/ReadOnlyChips'
 import RoundedIcon from './RoundedIcon/RoundedIcon'
 import TableCell from './TableCell/TableCell'
 import TabsSlider from './TabsSlider/TabsSlider'
@@ -50,8 +49,6 @@ export {
   ActionsMenu,
   BlockerSpy,
   Button,
-  Chip,
-  ChipCell,
   ConfirmDialog,
   CopyToClipboard,
   ErrorMessage,
@@ -70,6 +67,7 @@ export {
   LoaderForSuspenseFallback,
   Modal,
   PopUpDialog,
+  ReadOnlyChips,
   RoundedIcon,
   TableCell,
   TabsSlider,

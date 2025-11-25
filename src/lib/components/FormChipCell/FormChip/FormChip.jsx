@@ -41,6 +41,7 @@ let FormChip = (
     handleEditChip,
     handleRemoveChip,
     handleToEditMode,
+    isDeletable = false,
     isEditable = false,
     keyName = '',
     meta,
@@ -70,6 +71,7 @@ let FormChip = (
         className="input-label-key"
         editConfig={editConfig}
         handleRemoveChip={handleRemoveChip}
+        isDeletable={isDeletable}
         isEditable={isEditable}
         keyName={keyName}
         meta={meta}
@@ -98,6 +100,7 @@ FormChip.propTypes = {
   handleEditChip: PropTypes.func.isRequired,
   handleRemoveChip: PropTypes.func.isRequired,
   handleToEditMode: PropTypes.func.isRequired,
+  isDeletable: PropTypes.bool,
   isEditable: PropTypes.bool,
   keyName: PropTypes.string,
   meta: PropTypes.object.isRequired,
