@@ -49,11 +49,9 @@ export const formatDatetime = (
     return invalidDateMessage
   }
 
-  let date
+  const date = new Date(datetime)
 
-  try {
-    date = new Date(datetime)
-  } catch {
+  if (isNaN(date)) {
     return invalidDateMessage
   }
 
