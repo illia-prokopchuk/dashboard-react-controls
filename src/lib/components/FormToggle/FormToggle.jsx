@@ -35,7 +35,6 @@ const FormToggle = ({
   ...inputProps
 }) => {
   const formFieldClassNames = classnames(
-    'test',
     'form-field-toggle',
     'form-field__wrapper',
     density && `form-field__wrapper-${density}`,
