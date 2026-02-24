@@ -1,7 +1,8 @@
 
 
-Create a new dist version 3.2.8
+Create a new dist version 3.2.9
 
 Collecting:
-- [CI/CD] NPM publish & release (#476)
-- [FEAT] Changes to the real time pipeline screen (#482)
+- [Dependabot] Bump qs from 6.14.1 to 6.14.2 in the npm_and_yarn group across 1 directory#484
+- [FIX] Pipelines table components layout (#485)
+- [FIX] project "Created" field is empty after project creation

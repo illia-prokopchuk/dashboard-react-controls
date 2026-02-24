@@ -1,9 +1,9 @@
 import a from "moment";
 function m() {
-  const t = /* @__PURE__ */ new Set(["en-GB", "en-US"]);
-  return (navigator.languages || [navigator.language]).find((o) => t.has(o)) || "en-US";
+  const e = /* @__PURE__ */ new Set(["en-GB", "en-US"]);
+  return (navigator.languages || [navigator.language]).find((o) => e.has(o)) || "en-US";
 }
-const c = m(), d = (t, e, r = {
+const c = m(), d = (e, t, n = {
   year: "numeric",
   month: "short",
   day: "numeric",
@@ -11,29 +11,24 @@ const c = m(), d = (t, e, r = {
   minute: "2-digit",
   second: "2-digit"
 }, o = c) => {
-  if (!t)
-    return e;
-  let n;
-  try {
-    n = new Date(t);
-  } catch {
-    return e;
-  }
-  return typeof n != "object" || !(n instanceof Date) || isNaN(n) ? e : new Intl.DateTimeFormat(o, {
+  if (!e)
+    return t;
+  const r = new Date(e);
+  return isNaN(r) || typeof r != "object" || !(r instanceof Date) || isNaN(r) ? t : new Intl.DateTimeFormat(o, {
     numberingSystem: "latn",
     calendar: "gregory",
-    ...r
-  }).format(n);
-}, g = (t) => {
-  const [e, r] = t.split(":");
-  return r ? {
-    hour: e.replace(/_/g, "0"),
-    minute: r.replace(/_/g, "0")
+    ...n
+  }).format(r);
+}, g = (e) => {
+  const [t, n] = e.split(":");
+  return n ? {
+    hour: t.replace(/_/g, "0"),
+    minute: n.replace(/_/g, "0")
   } : {
     hour: "0",
     minute: "0"
   };
-}, h = (t) => (a.updateLocale("en", {
+}, h = (e) => (a.updateLocale("en", {
   relativeTime: {
     future: "in %s",
     past: "%s ago",
@@ -52,9 +47,9 @@ const c = m(), d = (t, e, r = {
     y: "a year",
     yy: "%d years"
   }
-}), a.utc(t).fromNow()), p = (t, e) => a(t).format(e), y = (t = [], e, r = !0) => [...t].sort((o, n) => {
-  const s = Date.parse(o[e]), u = Date.parse(n[e]);
-  return r ? s - u : u - s;
+}), a.utc(e).fromNow()), p = (e, t) => a(e).format(t), y = (e = [], t, n = !0) => [...e].sort((o, r) => {
+  const s = Date.parse(o[t]), u = Date.parse(r[t]);
+  return n ? s - u : u - s;
 });
 export {
   d as formatDatetime,

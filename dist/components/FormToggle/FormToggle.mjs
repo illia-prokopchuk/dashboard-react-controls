@@ -18,7 +18,6 @@ const b = ({
   ...d
 }) => {
   const p = _(
-    "test",
     "form-field-toggle",
     "form-field__wrapper",
     m && `form-field__wrapper-${m}`,
