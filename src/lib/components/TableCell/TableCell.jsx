@@ -24,7 +24,6 @@ import classnames from 'classnames'
 import Tooltip from '../Tooltip/Tooltip'
 import ReadOnlyChips from '../ReadOnlyChips/ReadOnlyChips'
 import TableLinkCell from '../../elements/TableLinkCell/TableLinkCell'
-import TableTagStatusCell from '../../elements/TableTagStatusCell/TableTagStatusCell'
 import TableTypeCell from '../../elements/TableTypeCell/TableTypeCell'
 import TextTooltipTemplate from '../TooltipTemplate/TextTooltipTemplate'
 
@@ -141,10 +140,6 @@ const TableCell = ({
       <td data-testid={cellData.headerId} className={cellClassNames}>
         {cellData.value}
       </td>
-    )
-  } else if (cellData.showStatus && cellData.showTag) {
-    return (
-      <TableTagStatusCell className={className} cellData={cellData} item={item} onClick={onClick} />
     )
   } else {
     return (
