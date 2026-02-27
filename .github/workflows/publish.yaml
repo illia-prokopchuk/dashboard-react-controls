@@ -48,19 +48,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build package
+        run: npm run build
+
       - name: Bump Package version
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          npm version ${{ github.event.inputs.version }}
+          NEW_VERSION=$(npm version ${{ github.event.inputs.version }})
+          echo "RELEASE_TAG=$NEW_VERSION" >> "$GITHUB_ENV"
           git push
-          git push --tags
-
-      - name: Set release tag
-        run: echo "RELEASE_TAG=v$(npm pkg get version | tr -d '\"')" >> "$GITHUB_ENV"
-
-      - name: Build package
-        run: npm run build
+          git push origin "$NEW_VERSION"
 
       - name: Publish to npm
         id: publish
