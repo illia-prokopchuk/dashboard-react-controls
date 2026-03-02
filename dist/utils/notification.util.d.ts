@@ -1,2 +1,0 @@
-export function showErrorNotification(dispatch: any, error: any, defaultErrorMsg: any, customErrorMsg: any, retryCallback?: any, showNotificationCallback?: any): void;
-//# sourceMappingURL=notification.util.d.ts.map
