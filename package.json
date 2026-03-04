@@ -1,6 +1,6 @@
 {
     "name": "iguazio.dashboard-react-controls",
-    "version": "3.2.12",
+    "version": "3.2.13",
     "description": "Collection of resources (such as CSS styles, fonts and images) and ReactJS 17.x components to share among different Iguazio React repos.",
     "module": "./dist/index.mjs",
     "main": "./dist/index.mjs",
