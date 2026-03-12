@@ -11,10 +11,10 @@
   inset: 0;
 
   &.section-loader {
-    position: absolute;
+    position: relative;
     z-index: 10;
     background-color: transparent;
-    inset: 0;
+    inset: auto;
   }
 
   &.secondary-loader {
