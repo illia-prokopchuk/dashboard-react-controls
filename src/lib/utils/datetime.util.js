@@ -49,7 +49,7 @@ export const formatDatetime = (
     return invalidDateMessage
   }
 
-  const date = new Date(datetime.replace ? datetime.replace('+00:00', '') : datetime)
+  const date = new Date(datetime)
 
   if (isNaN(date)) {
     return invalidDateMessage
