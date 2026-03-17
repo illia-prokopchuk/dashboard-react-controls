@@ -54,7 +54,7 @@ const TableLinkCell = ({
   return (
     <td data-testid={cellData.headerId} className={tableCellClassNames}>
       {cellData.linkIsExternal ? (
-        <span className="data-ellipsis">
+        <div className="data-ellipsis">
           <a href={link} className="link" target="_top">
             <Tooltip
               className={itemNameClassNames}
@@ -69,7 +69,13 @@ const TableLinkCell = ({
               </Tooltip>
             )}
           </a>
-        </span>
+
+          {cellData.showTag && (
+            <Tooltip className="item-tag" template={<TextTooltipTemplate text={item.tag} />}>
+              <span className="link-subtext">{item.tag}</span>
+            </Tooltip>
+          )}
+        </div>
       ) : (
         <Link to={link} onClick={() => selectItem(item)} className="data-ellipsis">
           <div className="name-wrapper">
