@@ -114,7 +114,7 @@ const Tip = ({ className = '', text, withExclamationMark = false }) => {
             {text}
           </div>
         </CSSTransition>,
-        document.getElementById('overlay_container')
+        document.getElementById('mlrun_overlay_container')
       )}
     </div>
   )

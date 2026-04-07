@@ -172,7 +172,7 @@ let PopUpDialog = (
             {children}
           </div>
         </div>,
-        document.getElementById('overlay_container')
+        document.getElementById('mlrun_overlay_container')
       )
     : null
 }

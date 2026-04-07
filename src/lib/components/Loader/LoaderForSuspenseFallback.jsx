@@ -23,7 +23,7 @@ import Loader from './Loader'
 
 const LoaderForSuspenseFallback = () => {
   useLayoutEffect(() => {
-    const overlayContainer = document.getElementById('overlay_container')
+    const overlayContainer = document.getElementById('mlrun_overlay_container')
     const savedVisibilityStyle = overlayContainer ? overlayContainer.style.visibility : 'visible'
 
     if (overlayContainer) overlayContainer.style.visibility = 'hidden'

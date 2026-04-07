@@ -210,7 +210,7 @@ let Tooltip = ({
               {template}
             </div>
           </CSSTransition>,
-          document.getElementById('overlay_container')
+          document.getElementById('mlrun_overlay_container')
         )}
     </>
   )
